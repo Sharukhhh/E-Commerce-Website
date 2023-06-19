@@ -1,0 +1,404 @@
+<%- include('../partials/templHeader.ejs') -%>
+<%- include('../partials/user-nav.ejs') -%>
+
+<div class="site-wrap">
+    
+
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/user">Home</a> <span class="mx-2 mb-0">/</span> <a href="/user/cart">Cart</a> <span class="mx-2 mb-0">/</span> <a href="/user/address">Billing</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-2">
+          <!-- <div class="col-md-12">
+            <div class="border p-4 rounded" role="alert">
+              Returning customer? <a href="#">Click here</a> to login
+            </div>
+          </div> -->
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-5 mb-md-0">
+            <h2 class="h3 mb-3 text-black">Shipping Address</h2>
+            <div class="p-lg-5 border">
+              <div class="border p-3 mb-3">
+               
+
+                <div>
+                  <div class="py-2">
+                    <p class="mb-0 fw-bold">
+                      <%= address.name %>,
+                      <%= address.phone %>,
+                      <%= address.state %>,
+                      <%= address.district %>,
+                      <%= address.address %>,
+                      <%= address.add %>,
+                      <%= address.pincode %>.
+                    </p>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+
+            <div class="row mb-5">
+              <div class="col-md-12">
+                <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+                <div class="p-3 p-lg-5 border">
+
+                  <form action="/redeemCoupon" id="couponForm" method="post">
+                  <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+
+                  <div class="input-group w-75">
+                    <input type="text" class="form-control me-2 mb-2" id="c_code" name="code" placeholder="Coupon Code" aria-label="Coupon Code" aria-describedby="button-addon2">
+                    <div class="input-group-append d-flex mb-2">
+                      <button type="submit" class="btn btn-primary btn-sm" type="button" id="button-addon2">Apply</button>
+                    </div>
+                  </div>
+                </form>
+
+                <h5 id="couponMessage1" class="text-success"><strong> </strong></h5>
+                <h5 id="couponMessage2" class="text-danger"><strong> </strong></h5>
+
+                  <a href="" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Show Coupons</a>
+
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Coupons Available:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <% couponData.forEach((coupon) => { %>
+                          <% if (coupon.status && new Date(coupon.createdDate) <= new Date() && new Date(coupon.expiryDate) >= new Date()) { %>
+                            <div class="row mb-2">
+                              <div class="col-12">
+                                <div class="rounded border border-info py-2 bg-light text-center">
+                                  <h3 class="text-dark"><i class="fa-solid fa-gift fa-sm me-3"></i> <%= coupon.code %></h3>
+                                  <p class="text-muted fw-semibold mt-1"><%= coupon.description %></p>
+                                </div>
+                              </div>
+                            </div>
+                          <% } %>
+                        <% }) %>
+                      </div>
+                      <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>              
+              </div>
+            </div>
+
+            <div class="row mb-5">
+              <div class="col-md-12">
+                
+              </div>
+            </div>    
+            
+            <div class="row mb-5">
+              <div class="col-md-12">
+                <h2 class="h3 mb-3 text-black">Your Order Summary</h2>
+                <div class="p-3 p-lg-5 border">
+                  <table class="table site-block-order-table mb-5">
+                    <thead>
+                      <th>Items</th>
+                      <th>Price</th>
+                      <th>Total</th>
+                    </thead>
+                   
+                    <tbody>
+                      <% cart.products.forEach((product) => { %>
+                      <tr>
+                        <td><%= product.productId.pname %><strong class="mx-2">x</strong><%= product.quantity %></td>
+                        <td><%= product.productId.price %></td>
+                        <% let total = product.quantity * product.productId.price %>
+                        <td class="item-total">
+                          ₹ <%= total %>
+                        </td>
+                      </tr>
+                      <% }) %>
+                      <tr class="text-center">
+                        <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+                        <td class="text-black" id="cart-subtotal"> </td>
+                      </tr>
+                      <tr class="text-center">
+                        <td class="text-black font-weight-bold"><strong>Coupon Amount Deduced</strong></td>
+                        <td class="text-black" id="coupondiscount"> </td>
+                      </tr>
+                      <tr class="text-center">
+                        <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+                        <td class="text-black font-weight-bold" id="order-total"><strong> </strong></td>
+                      </tr>
+                     
+                    </tbody>
+                    
+                  </table>
+
+                  <p>Use Wallet to Pay: </p>
+                  <p class="text-muted"></p>
+                  <button class="btn btn-primary" type="submit" id="wallet-pay" onclick="walletPay()">Pay From Wallet</button>
+                  
+                  <p id="wallet" class="text-success fw-bold"></p>
+
+                  <hr> 
+
+                  <form id="paymentForm" action="/user/order_success/<%= address._id %>" method="post">
+
+                  <div class="border p-3 mb-3 d-flex justify-content-between">
+                    <h3 class="h6 mb-0"><a class="d-block" > Cash On Delivery </a></h3>
+                    
+                    <div class="form-check d-flex justify-content-between">
+                      <input class="form-check-input" type="radio" name="paymentmethod" value="cod" id="defaultCheck1">
+                    </div>
+                  </div>
+
+                  <div class="border p-3 mb-3 d-flex justify-content-between">
+                    <h3 class="h6 mb-0"><a class="d-block" > PayPal </a></h3>
+                    
+                    <div class="form-check d-flex justify-content-between">
+                      <input class="form-check-input" type="radio"  name="paymentmethod" value="paypal" id="defaultCheck2">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group">
+                    <button type="submit" onclick="validateForm()" class="razor-pay btn btn-primary btn-lg py-3 btn-block">Place Order</button>
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- </form> -->
+      </div>
+    </div>
+
+    <footer class="site-footer border-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="footer-heading mb-4">Navigations</h3>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Sell online</a></li>
+                  <li><a href="#">Features</a></li>
+                  <li><a href="#">Shopping cart</a></li>
+                  <li><a href="#">Store builder</a></li>
+                </ul>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Mobile commerce</a></li>
+                  <li><a href="#">Dropshipping</a></li>
+                  <li><a href="#">Website development</a></li>
+                </ul>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Point of sale</a></li>
+                  <li><a href="#">Hardware</a></li>
+                  <li><a href="#">Software</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <h3 class="footer-heading mb-4">Promo</h3>
+            <a href="#" class="block-6">
+              <img src="images/hero_1.jpg" alt="Image placeholder" class="img-fluid rounded mb-4">
+              <h3 class="font-weight-light  mb-0">Finding Your Perfect Shoes</h3>
+              <p>Promo from  nuary 15 &mdash; 25, 2019</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="block-5 mb-5">
+              <h3 class="footer-heading mb-4">Contact Info</h3>
+              <ul class="list-unstyled">
+                <li class="address">203 Fake St. Mountain View, San Francisco, California, USA</li>
+                <li class="phone"><a href="tel://23923929210">+2 392 3929 210</a></li>
+                <li class="email">emailaddress@domain.com</li>
+              </ul>
+            </div>
+
+            <div class="block-7">
+              <form action="#" method="post">
+                <label for="email_subscribe" class="footer-heading">Subscribe</label>
+                <div class="form-group">
+                  <input type="text" class="form-control py-4" id="email_subscribe" placeholder="Email">
+                  <input type="submit" class="btn btn-sm btn-primary" value="Send">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" class="text-primary">Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+          </div>
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+
+    
+
+  const setSubTotal = () => {
+  const itemTotal = document.getElementsByClassName('item-total');
+  let subtotal = 0;
+  for (let i = 0; i < itemTotal.length; i++) {
+    const value = parseFloat(itemTotal[i].innerText.replace(/[^0-9.-]+/g, ''));
+    if (!isNaN(value)) {
+      subtotal += value;
+    }
+  }
+  document.getElementById('cart-subtotal').innerHTML = subtotal.toFixed(2); 
+  document.getElementById('order-total').innerHTML = subtotal.toFixed(2); 
+ };
+
+
+    setSubTotal();
+
+    function validateForm(){
+     
+      var codCheckbox = document.getElementById('defaultCheck1');
+      var paypalCheckbox = document.getElementById('defaultCheck2');
+
+      if(!codCheckbox.checked && !paypalCheckbox.checked ){
+        swal({
+          title: "Please select a payment method",
+          icon: "warning",
+          button: "OK",
+        });
+        return false;
+      }
+
+      submitFormAsync();
+    }
+
+    function submitFormAsync(){
+      var form = document.getElementById('paymentForm');
+      form.submit();
+    }
+
+    function walletPay(){
+      document.getElementById('wallet-pay').setAttribute('disabled', 'true');
+
+      $.ajax({
+        url: '/wallet_pay',
+        method: 'POST',
+
+        success: function(data){
+          if(data.success){
+            setNewTotal(data.walletBalance);
+          } else {
+            console.log(error);
+          }
+        },
+
+        error: function(xhr, status, error){
+          console.error('Error in wallet PAyment through wallet', status);
+        }
+      })
+    }
+
+    function setNewTotal(walletBalance){
+      const itemTotal = parseInt(document.getElementById('order-total').innerHTML);
+
+      let sum = (10 /100) * itemTotal;
+      console.log(sum);
+
+      if(walletBalance > sum){
+        var newTotal = (itemTotal - sum);
+      } else {
+        swal({
+          title: "Insufficent Wallet Amount",
+          icon: "warning",
+          button: "OK"
+        })
+      }
+
+      document.getElementById('wallet').innerHTML = `Wallet Amount - ${sum}`;
+      // document.getElementById('').innerHTML = ``;
+      // document.getElementById('').style.display = ``;
+      // document.getElementById('').style.display = ``;
+
+      document.getElementById('order-total').innerHTML = `${newTotal}`;
+    }
+
+
+
+    // .......................................................
+
+    $(document).ready(function(){
+      $('#couponForm').on('submit', function(e){
+        e.preventDefault();
+
+        const couponcode = $('#c_code').val();
+
+        $.ajax({
+          url: '/redeemCoupon',
+          method: 'POST',
+          data: {code: couponcode},
+          success: function(response){
+            if(response.success){
+              $('#couponMessage1').text('Coupon Applied Successfully!');
+              $('#couponMessage2').empty();
+              // $('#cart-subtotal').text('₹' + response.orderTotal);
+              $('#coupondiscount').text('₹' + response.discountAmount);
+
+              const orderTotal = '₹' + response.orderTotal;
+              $('#order-total').html('<strong>' + orderTotal + '</strong>');
+            } else {
+              $('#couponMessage1').empty();
+              $('#couponMessage2').text(response.message);
+            }
+          },
+
+          error: function(error){
+            console.log(error, '😂😂😂😂Error at coupon ajax handler');
+          }
+
+        })
+      })
+    })
+
+    // setTimeout(()=>{
+    //     var couponMessage2 =  document.getElementById('couponMessage2');
+    //       if(couponMessage2){
+    //         couponMessage2.style.display = 'none';
+    //       }
+    // }, 6000);
+
+
+  </script>
+
+<%- include('../partials/templFooter.ejs') -%>

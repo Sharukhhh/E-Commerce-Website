@@ -1,0 +1,320 @@
+<%- include('../partials/templHeader.ejs') -%>
+<%- include('../partials/user-nav.ejs') -%>
+
+<div class="site-wrap">
+    
+
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/user/products">Shop</a> <span class="mx-2 mb-0">/</span><a href="/user/cart">Cart</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Billing Details</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <!-- <div class="row mb-5">
+          <div class="col-md-12">
+            <div class="border p-4 rounded" role="alert">
+              Returning customer? <a href="#">Click here</a> to login
+            </div>
+          </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-6 mb-5 mb-md-0">
+            <h2 class="h3 mb-3 text-black">Add Details</h2>
+            <div class="p-3 p-lg-5 border">
+              <form action="/user/address" method="post" onsubmit="return validateForm()">
+
+
+                <%
+                    if(typeof message !== 'undefined'){
+                      %>
+                      <div id="msg" class="col-md-12 alter alert-danger">
+                        <p class="fw-semibold text-center"> <%= message %> </p>
+                      </div>
+                      <%
+                    }
+
+                  %>
+
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="c_fname" class="text-black"> Name <span class="text-danger">*</span></label>
+                  <input name="name"  type="text" class="form-control" id="c_fname" required/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="c_country" class="text-black">State <span class="text-danger">*</span></label>
+                <input name="state" type="text" id="c_country" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label for="c_country" class="text-black">District<span class="text-danger">*</span></label>
+                <input name="district" type="text" id="c_country" class="form-control" required>
+
+              </div>
+              <div class="form-group row">
+                <div class="col-md-12 mb-3">
+                  <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
+                  <input name="add" type="text" class="form-control  py-5" id="c_address" required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="c_postal_zip" class="text-black">Pincode<span class="text-danger">*</span></label>
+                  <input name="pincode" type="text" class="form-control" id="c_postal_zip" required>
+                </div>
+              </div>
+
+              <div class="form-group row mb-5">
+                <div class="col-md-12">
+                  <label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
+                  <input name="phone" type="text" class="form-control" id="c_phone" placeholder="Phone Number" required>
+                </div>
+              </div>
+
+              
+
+              <div class="form-group">
+                <button class="btn btn-primary btn-lg py-3 btn-block" type="submit">Submit Address</button>
+              </div>
+              <!-- <div class="form-group">
+                <label for="c_order_notes" class="text-black">Order Notes</label>
+                <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="5" class="form-control" placeholder="Write your notes here..."></textarea>
+              </div> -->
+            </form>
+            </div>
+          </div>
+          <div class="col-md-6">            
+            <div class="row mb-5">
+              <div class="col-md-12 mb-5">
+                <h2 class="h3 mb-3 text-black">Recent Address</h2>
+               
+                <div class="p-lg-5 border">
+                  <% addressData.forEach((address, index) => { %>
+                  <div class="border p-3 mb-3">
+                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Address - <%= index + 1 %> </a></h3>
+                    
+                    <div class="collapse" id="collapsebank">
+                      <div class="py-2">
+                        <p class="mb-0">
+                            <%= address.name %>,
+                            <%= address.phone %>,
+                            <%= address.state %>,
+                            <%= address.district %>
+                            <%= address.add %>,
+                            <%= address.pincode %>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="d-flex" >
+                      <a href="/user/checkout/<%= address._id %>"> <button type="submit"  id="collapsebank" value=""  class="collapse btn btn-sm btn-primary me-2">Select</button> </a> 
+                    </div>
+      
+                    
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+
+              <h2 class="h3 mb-3 text-black">Your Order Summary</h2>
+              <div class="p-3 p-lg-5 border">
+                <table class="table site-block-order-table mb-5">
+                  <thead>
+                    <th>Items</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                  </thead>
+                 
+                  <tbody>
+                    <% cart.products.forEach((product) => { %>
+                    <tr>
+                      <td><%= product.productId.pname %><strong class="mx-2">x</strong><%= product.quantity %></td>
+                      <td><%= product.productId.price %></td>
+                      
+                      <td class="item-total">
+                        <% let total = product.quantity * product.productId.price %>
+                        ₹ <%= total %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <tr class="text-center">
+                      <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+                      <td class="text-black" id="cart-subtotal"> </td>
+                    </tr>
+                    <tr class="text-center">
+                      <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+                      <td class="text-black font-weight-bold" id="order-total"><strong> </strong></td>
+                    </tr>
+                   
+                  </tbody>
+                  
+                </table>
+
+
+              </div>
+
+            
+            </div>
+          </div>
+        </div>
+        <!-- </form> -->
+      </div>
+    </div>
+
+    <footer class="site-footer border-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="footer-heading mb-4">Navigations</h3>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Sell online</a></li>
+                  <li><a href="#">Features</a></li>
+                  <li><a href="#">Shopping cart</a></li>
+                  <li><a href="#">Store builder</a></li>
+                </ul>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Mobile commerce</a></li>
+                  <li><a href="#">Dropshipping</a></li>
+                  <li><a href="#">Website development</a></li>
+                </ul>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Point of sale</a></li>
+                  <li><a href="#">Hardware</a></li>
+                  <li><a href="#">Software</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <h3 class="footer-heading mb-4">Promo</h3>
+            <a href="#" class="block-6">
+              <img src="images/hero_1.jpg" alt="Image placeholder" class="img-fluid rounded mb-4">
+              <h3 class="font-weight-light  mb-0">Finding Your Perfect Shoes</h3>
+              <p>Promo from  nuary 15 &mdash; 25, 2019</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="block-5 mb-5">
+              <h3 class="footer-heading mb-4">Contact Info</h3>
+              <ul class="list-unstyled">
+                <li class="address">203 Fake St. Mountain View, San Francisco, California, USA</li>
+                <li class="phone"><a href="tel://23923929210">+2 392 3929 210</a></li>
+                <li class="email">emailaddress@domain.com</li>
+              </ul>
+            </div>
+
+            <div class="block-7">
+              <form action="#" method="post">
+                <label for="email_subscribe" class="footer-heading">Subscribe</label>
+                <div class="form-group">
+                  <input type="text" class="form-control py-4" id="email_subscribe" placeholder="Email">
+                  <input type="submit" class="btn btn-sm btn-primary" value="Send">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" class="text-primary">Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+          </div>
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    setTimeout(()=>{
+      document.getElementById('msg').style.display='none'
+    },4000);
+
+    function validateForm(){
+      let name = document.getElementById('c_fname').value;
+      let state = document.getElementById('c_country').value;
+      let district = document.getElementById('c_country').value;
+      let address = document.getElementById('c_address').value;
+      let pincode = document.getElementById('c_postal.zip').value;
+      let phone = document.getElementById('c_phone').value;
+
+      if(name.trim() === ""){
+        alert('Please fill your details completely');
+        return false;
+      }
+
+      if(state.trim() === ""){
+        alert('Please fill your details completely');
+        return false;
+      }
+
+      if(district.trim() === ""){
+        alert('Please fill your details completely');
+        return false;
+      }
+
+      if(address.trim() === ""){
+        alert('Please fill your details completely');
+        return false;
+      }
+
+      if(pincode.trim() === ""){
+        alert('Please fill your details completely');
+        return false;
+      }
+
+      if(phone.trim() === ""){
+        alert('Please fill your details completely');
+        return false;
+      }
+      return true;
+    }
+
+    // const setSubTotal = () =>{
+    //   const itemTotal = document.getElementsByClassName('item-total');
+    //   console.log(itemTotal, "item total")
+    //   let subtotal = 0;
+    //   for(let i = 0 ; i < itemTotal.length ; i++)
+    //   {
+    //     subtotal += Number(itemTotal[i].innerHTML);
+    //   }
+    //   console.log(subtotal, "vanuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+    //   document.getElementById('cart-subtotal').innerHTML = subtotal;
+    //   document.getElementById('order-total').innerHTML = subtotal;
+    // }
+
+
+
+  const setSubTotal = () => {
+  const itemTotal = document.getElementsByClassName('item-total');
+  let subtotal = 0;
+  for (let i = 0; i < itemTotal.length; i++) {
+    const value = parseFloat(itemTotal[i].innerText.replace(/[^0-9.-]+/g, ''));
+    if (!isNaN(value)) {
+      subtotal += value;
+    }
+  }
+  document.getElementById('cart-subtotal').innerHTML = subtotal.toFixed(2); 
+  document.getElementById('order-total').innerHTML = subtotal.toFixed(2); 
+ };
+
+    setSubTotal();
+  </script>
+
+
+<%- include('../partials/templFooter.ejs') -%>

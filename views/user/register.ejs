@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeStyle</title>
+
+ 
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet"
+        />
+    
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    
+        <!-- Icons. Uncomment required icon fonts -->
+        <link rel="stylesheet" href="/public/assets/vendor/fonts/boxicons.css" />
+    
+        <!-- Core CSS -->
+        <link rel="stylesheet" href="/public/assets/vendor/css/core.css" class="template-customizer-core-css" />
+        <link rel="stylesheet" href="/public/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+        <link rel="stylesheet" href="/public/assets/css/demo.css" />
+    
+        <!-- Vendors CSS -->
+        <link rel="stylesheet" href="/public/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    
+        <link rel="stylesheet" href="/public/assets/vendor/libs/apex-charts/apex-charts.css" />
+    
+        <!-- Page CSS -->
+    
+        <!-- Helpers -->
+        <script src="/public/assets/vendor/js/helpers.js"></script>
+    
+        <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+        <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+        <script src="/public/assets/js/config.js"></script>
+
+    <link rel="stylesheet" href="/public/register.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+  <section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+
+              <form action="/register" method="post">
+
+                <div class="form-outline mb-2">
+                  <input type="text" name="name" id="form3Example1cg" class="form-control form-control-lg" required />
+                  <label class="form-label" for="form3Example1cg">Your Name</label>
+                </div>
+
+                <div class="form-outline mb-2">
+                  <input type="email" name="email" id="form3Example3cg" class="form-control form-control-lg" required />
+                  <label class="form-label" for="form3Example3cg">Your Email</label>
+                </div>
+
+                <div class="form-outline  mb-2 ">
+                  <input type="text" name="mobile" id="form3Example4cg" class="form-control form-control-lg" required />
+                  <label class="form-label" for="form3Example4cg">Phone No.</label>
+                </div>
+
+                <div class="form-password-toggle form-outline mb-4">
+                  <div class="input-group">
+                    <input
+                      type="password" name="password"
+                      class="form-control p-2"
+                      id="basic-default-password12"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="basic-default-password2"
+                    />
+                    <span id="basic-default-password2" class="input-group-text cursor-pointer"
+                      ><i class="bx bx-hide"></i
+                    ></span>
+                  </div>
+                  <label class="form-label" for="basic-default-password12">Enter Password</label> <br>
+                  <p class="form-text text-muted">Password must meet the following requirements:</p>
+                  <ul class="form-text text-muted">
+                    <li>At least 8 characters long</li>
+                    <li>Contains at least 1 digit</li>
+                    <li>Contains at least 1 uppercase letter</li>
+                  </ul>
+                </div>
+
+                <div class="form-password-toggle form-outline mb-4">
+                  <div class="input-group">
+                    <input
+                      type="password" name="confirmPassword"
+                      class="form-control p-2"
+                      id="basic-default-password12"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="basic-default-password2"
+                    />
+                    <span id="basic-default-password2" class="input-group-text cursor-pointer"
+                      ><i class="bx bx-hide"></i
+                    ></span>
+                  </div>
+                  <label class="form-label" for="basic-default-password12">Repeat Your Password</label>
+                </div>
+
+
+                <%
+                  if(typeof message !== 'undefined')
+                  {
+                    %>
+                    <div id="msg" class="alter alert-danger">
+                      <p class="fw-bold text-center"> <%=message %> </p>
+                    </div>
+                    <%
+                  }
+                %>
+
+                <div class="d-flex justify-content-center">
+                  <button type="submit" value="Register" 
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">REGISTER</button>
+                </div>
+
+                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="./login"
+                    class="fw-bold text-body"><u>Login here</u></a></p>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  setTimeout(()=>{
+     var msg =  document.getElementById('msg');
+      if(msg){
+        msg.style.display = 'none';
+      }
+
+    }, 4000);
+</script>
+
+</body>
+</html>

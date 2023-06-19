@@ -1,0 +1,41 @@
+{
+  "name": "e-commerce-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express-session": "^1.17.7",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
+    "exceljs": "^4.3.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "html-pdf": "^3.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.4.0",
+    "mongoose": "^7.1.0",
+    "multer": "^1.4.5-lts.1",
+    "nocache": "^3.0.4",
+    "nodemon": "^2.0.22",
+    "path": "^0.12.7",
+    "paypal-rest-sdk": "^1.8.1",
+    "razorpay": "^2.8.6",
+    "sharp": "^0.32.1",
+    "sweetalert": "^2.1.2",
+    "toastify-js": "^1.12.0",
+    "toastr": "^2.1.4",
+    "twilio": "^4.11.0"
+  }
+}

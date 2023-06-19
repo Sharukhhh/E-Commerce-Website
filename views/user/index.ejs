@@ -1,0 +1,332 @@
+<%- include('../partials/templHeader.ejs') -%>
+  
+  <div class="site-wrap">
+    <header class="site-navbar" role="banner">
+      <div class="site-navbar-top">
+        <div class="container">
+          <div class="row align-items-center">
+
+            <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+              <form action="" class="site-block-top-search border border-light">
+                <span class="icon icon-search2"></span>
+                <input type="text" class="form-control border-0" placeholder="Search">
+              </form>
+            </div>
+
+            <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+              <div class="site-logo">
+                <a href="/" class="js-logo-clone">EyeStyle</a>
+              </div>
+            </div>
+           
+            <div class="col-6 col-md-4 order-3 order-md-3 text-right">
+              <div class="site-top-icons">
+                <ul>
+                  <!-- <li><a href="/login"><span class="icon icon-person"></span></a></li> -->
+                  <li><a href="/login"><span class="icon icon-heart-o"></span></a></li>
+                  <li>
+                    <a href="/login" class="site-cart">
+                      <span class="icon icon-shopping_cart"></span>
+                    </a>
+                  </li> 
+                  <li class="dropdown mr-1 ml-md-auto"> 
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Account
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                      
+                      <a class="dropdown-item" href="/login">Login</a>
+                      <a class="dropdown-item" href="/register">Create Account</a>
+                    </div>
+                  </li>
+                  <!-- <li> <a href="/login" class="btn btn-primary" style="width: 81px;"> Login </a> </li> -->
+                  <li class="d-inline-block d-md-none ml-md-0"><a href="#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a></li>
+                </ul>
+              </div> 
+            </div>
+
+          </div>
+        </div>
+      </div> 
+      <nav class="site-navigation text-right text-md-center" role="navigation">
+        <div class="container">
+          <ul class="site-menu js-clone-nav d-none d-md-block">
+            <li class="active">
+              <a href="/">Home</a>
+              <!-- <ul class="dropdown">
+                <li><a href="#">Menu One</a></li>
+                <li><a href="#">Menu Two</a></li>
+                <li><a href="#">Menu Three</a></li>
+                <li class="has-children">
+                  <a href="#">Sub Menu</a>
+                  <ul class="dropdown">
+                    <li><a href="#">Menu One</a></li>
+                    <li><a href="#">Menu Two</a></li>
+                    <li><a href="#">Menu Three</a></li>
+                  </ul>
+                </li>
+              </ul> -->
+            </li>
+            <li class="">
+              <a href="/under_maintenance">About</a>
+              <!-- <ul class="dropdown">
+                <li><a href="#">Menu One</a></li>
+                <li><a href="#">Menu Two</a></li>
+                <li><a href="#">Menu Three</a></li>
+              </ul> -->
+            </li>
+            <li>
+              <a href="/product">Shop</a>
+            </li>
+            <li><a href="/login">My Orders</a></li>
+            <li><a href="/login">My Wallet</a></li>
+            <li><a href="/under_maintenance">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    
+    
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <% bannerData.forEach(function(banner, index) { %>
+          <li data-target="#myCarousel" data-slide-to="<%= index %>" <% if (index === 0) { %>class="active"<% } %>></li>
+        <% }); %>
+      </ol>
+      
+      <!-- Slides -->
+      <div class="carousel-inner">
+        <% bannerData.forEach(function(banner, index) { %>
+          <div class="carousel-item <% if (index === 0) { %>active<% } %>">
+            <div class="site-blocks-cover" style="background-image: url('/<%= banner.cover %>');" data-aos="fade">
+              <div class="container">
+                <div class="row align-items-start align-items-md-center justify-content-end">
+                  <div class="col-md-5 text-center text-md-left pt-5 pt-md-0">
+                    <h1 class="mb-2 text-white"><%= banner.title %></h1>
+                    <div class="intro-text text-center text-md-left">
+                      <p class="mb-4 font-weight-bold text-secondary"><%= banner.note %></p>
+                      <p>
+                        <a href="" class="btn btn-sm btn-primary">Shop Now</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      
+      <!-- Controls -->
+      <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+
+    <div class="site-section site-section-sm site-blocks-1">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-truck"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Free Shipping</h2>
+              <p>Elevate Your Eyewear Game with Effortless Convenience. Enjoy Complimentary Shipping on All Orders, Bringing Fashion and Function Right to Your Doorstep. Shop Now and Experience Hassle-Free Shopping, Where Style Meets Seamless Delivery.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-refresh2"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Free Returns</h2>
+              <p>Shop Risk-Free with Confidence. Enjoy Hassle-Free Returns on All Orders, Ensuring Your Complete Satisfaction. Embrace the Joy of Effortless Shopping, Where Your Style Comes First. Start Exploring Our Sunglasses Collection Today!</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-help"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Customer Support</h2>
+              <p>Our Satisfaction, Our Priority. Experience Exceptional Support Every Step of the Way. Our Dedicated Team is Here to Assist You, Ensuring a Seamless and Enjoyable Shopping Experience. Discover Unmatched Service as You Find Your Perfect Pair of Sunglasses."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section site-blocks-2">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
+            <a class="block-2-item" href="#">
+              <figure class="image">
+                <img src="/public/index/images/Men_2.jpeg" alt="" class="img-fluid">
+              </figure>
+              <div class="text">
+                <span class="text-uppercase">Collections</span>
+                <h3>Men</h3>
+              </div>
+            </a>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
+            <a class="block-2-item" href="#">
+              <figure class="image">
+                <img src="/public/index/images/Kids.jpg" alt="" class="img-fluid">
+              </figure>
+              <div class="text">
+                <span class="text-uppercase">Collections</span>
+                <h3>Children</h3>
+              </div>
+            </a>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
+            <a class="block-2-item" href="#">
+              <figure class="image">
+                <img src="/public/index/images/Women_1.jpg" alt="" class="img-fluid">
+              </figure>
+              <div class="text">
+                <span class="text-uppercase">Collections</span>
+                <h3>Women</h3>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section block-3 site-blocks-2 bg-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-7 site-section-heading text-center pt-4">
+            <h2>Featured Products</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="nonloop-block-3 owl-carousel">
+              <% productData.forEach((product) => { %>
+              <div class="item">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image bg-warning">
+                    <img src="/<%= product.image[0] %>" alt="Image placeholder" class="img-fluid">
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3><a href="#"><%= product.pname %></a></h3>
+                    <p class="text-primary font-weight-bold">₹ <%= product.price %></p>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section block-8">
+      <div class="container">
+        <div class="row justify-content-center  mb-5">
+          <div class="col-md-7 site-section-heading text-center pt-4">
+            <h2>Big Sale!</h2>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col-md-12 col-lg-7 mb-5">
+            <a href="#"><img src="/public/index/images/Vogue-3.jpg" alt="Image placeholder" class="img-fluid rounded"></a>
+          </div>
+          <div class="col-md-12 col-lg-5 text-center pl-md-5">
+            <h2><a href="#">40% less in all items</a></h2> <br>
+            <!-- <p class="post-meta mb-4">By <a href="#">Carl Smith</a> <span class="block-8-sep">&bullet;</span> September 3, 2018</p> -->
+            <p>
+              Introducing EyeStyle: Discover exclusive offers on stylish sunglasses. Upgrade your eyewear game with unbeatable prices and trendy designs. Enjoy hassle-free shopping with free shipping and returns. Shop now and find your perfect pair at EyeStyle. Don't miss out on these incredible deals.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer border-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="footer-heading mb-4">Navigations</h3>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Sell online</a></li>
+                  <li><a href="#">Features</a></li>
+                  <li><a href="#">Shopping cart</a></li>
+                  <li><a href="#">Store builder</a></li>
+                </ul>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Mobile commerce</a></li>
+                  <li><a href="#">Dropshipping</a></li>
+                  <li><a href="#">Website development</a></li>
+                </ul>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <ul class="list-unstyled">
+                  <li><a href="#">Point of sale</a></li>
+                  <li><a href="#">Hardware</a></li>
+                  <li><a href="#">Software</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <h3 class="footer-heading mb-4">Promo</h3>
+            <a href="#" class="block-6">
+              <img src="/images/hero_1.jpg" alt="Image placeholder" class="img-fluid rounded mb-4">
+              <h3 class="font-weight-light  mb-0">Finding Your Perfect Shoes</h3>
+              <p>Promo from  nuary 15 &mdash; 25, 2019</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="block-5 mb-5">
+              <h3 class="footer-heading mb-4">Contact Info</h3>
+              <ul class="list-unstyled">
+                <li class="address">203 Fake St. Mountain View, San Francisco, California, USA</li>
+                <li class="phone"><a href="tel://23923929210">+2 392 3929 210</a></li>
+                <li class="email">emailaddress@domain.com</li>
+              </ul>
+            </div>
+
+            <div class="block-7">
+              <form action="#" method="post">
+                <label for="email_subscribe" class="footer-heading">Subscribe</label>
+                <div class="form-group">
+                  <input type="text" class="form-control py-4" id="email_subscribe" placeholder="Email">
+                  <input type="submit" class="btn btn-sm btn-primary" value="Send">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" class="text-primary">Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+          </div>
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <%- include('../partials/templFooter.ejs') -%>
