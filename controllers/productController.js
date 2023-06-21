@@ -5,10 +5,14 @@ const Offer = require('../models/offerModel');
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
+const session = require('express-session');
+
+const auth = require('../middlewares/adminAuth');
 
 
 const loadAddProduct = async (req, res)=>{
     try {
+        const admin = req.session.admin;
         const categories = await Category.find();
 
         res.render('add-product', {categories}); 
@@ -19,6 +23,8 @@ const loadAddProduct = async (req, res)=>{
 
 const loadEditProduct = async(req, res)=>{  
     try {
+        const admin = req.session.admin;
+
         const pId = req.params.id;
         const item = await Product.findById(pId);
 
@@ -34,6 +40,7 @@ const loadEditProduct = async(req, res)=>{
 
 const loadCategory = async (req, res)=>{
     try {
+        const admin = req.session.admin;
         res.render('add-category');
     } catch (error) {
         console.log(error);
@@ -43,6 +50,7 @@ const loadCategory = async (req, res)=>{
 
 const  loadCategoryList = async (req, res)=> {
     try {
+        const admin = req.session.admin;
         const categories = await Category.find();
         
         res.render('category-list', {categories});
@@ -53,6 +61,7 @@ const  loadCategoryList = async (req, res)=> {
 
 const loadEditCategory = async (req, res) => {
     try {
+        const admin = req.session.admin;
         const categoryId = req.params.id;
         const category = await Category.findById(categoryId);
        
@@ -64,28 +73,31 @@ const loadEditCategory = async (req, res) => {
     }
 }
 
-const showCategoryOffers = async (req, res) => {
-    try {
-        const categoryOffers = await Offer.find();
+// const showCategoryOffers = async (req, res) => {
+//     try {
+//         const admin = req.session.admin;
+//         const categoryOffers = await Offer.find().populate('category','categname');
 
-        res.render('list-catoffers', {categoryOffers});
-    } catch (error) {
-        console.log(error);
-    }
-}
+//         res.render('list-catoffers', {categoryOffers});
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
-const loadAddoffer = async (req, res) => {
-    try {
-        const categories = await Category.find();
+// const loadAddoffer = async (req, res) => {
+//     try {
+//         const admin = req.session.admin;
+//         const categories = await Category.find();
 
-        res.render('add-offers', {categories});
-    } catch (error) {
-        console.log(error);
-    }
-}
+//         res.render('add-offers', {categories});
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 loadAddCover = async (req, res) => {    
     try {
+        const admin = req.session.admin;
         res.render('add-banner');
     } catch (error) {
         console.log(error);                
@@ -95,6 +107,7 @@ loadAddCover = async (req, res) => {
 
 loadCoverDetails = async(req, res) => {
     try {
+        const admin = req.session.admin;
         const bannerData = await bannerModel.find();
 
         res.render('show-banner',{bannerData});
@@ -106,6 +119,7 @@ loadCoverDetails = async(req, res) => {
 
 loadEditCover = async (req, res) => {
     try {
+        const admin = req.session.admin;
         res.render('edit-banner');
     } catch (error) {
         console.log(error);        
@@ -113,40 +127,72 @@ loadEditCover = async (req, res) => {
 }
 // ...........................................................................................................
 
-const addOffer = async (req, res) => {
-    try {
-        const categories = await Category.find();
-        const {category, description, amount, expiryDate } = req.body;
+// const addOffer = async (req, res) => {
+//     try {
+//         const categories = await Category.find();
+//         const {category, description, amount, expiryDate } = req.body;
 
 
-        if(amount<= 0) {
-            return res.render('add-offers', {categories, message: 'Invalid Amount entry'});
-        }
+//         if(amount<= 0) {
+//             return res.render('add-offers', {categories, message: 'Invalid Amount entry'});
+//         }
 
-        const currentDate = new Date();
-        if(new Date(expiryDate) < currentDate){
-            return res.render('add-offers', {categories, message: 'The Expired date has already passed. Cannot add an expired offer'});
-        }
+//         const currentDate = new Date();
+//         if(new Date(expiryDate) < currentDate){
+//             return res.render('add-offers', {categories, message: 'The Expired date has already passed. Cannot add an expired offer'});
+//         }
 
-        
-        const categoryObject = await Category.findOne({ categname: category });
-        if (!categoryObject) {
-            return res.render('add-offers', { categories, message: 'Invalid category' });
-        }
+//         const categoryObj = await Category.findOne({ _id: category });
 
-        const newOffer = new Offer({
-            category: categoryObject._id,
-            description,
-            amount,
-            expiryDate
-        });
+//         if (!categoryObj) {
+//             return res.render('add-offers', { categories, message: 'Invalid category selection' });
+//         }
 
-        await newOffer.save();
-        res.redirect('/admin/dashboard/offers')
-    } catch (error) {
-        console.log(error);
-    }
-}
+//         const newOffer = new Offer({
+//             category:  categoryObj._d,
+//             description,
+//             amount,
+//             expiryDate
+//         });
+
+//         await newOffer.save();
+//         res.redirect('/admin/dashboard/offers')
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
+
+// const activateOffer = async (req, res) => {
+//     try {
+//         const offerId = req.params.id;
+
+//         await Offer.findByIdAndUpdate(offerId,
+//             {status: true},
+//             {new: true}
+//             );
+
+//             res.redirect('/admin/dashboard/offers');
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
+
+// const deactivateOffer = async (req, res) => {
+//     try {
+//         const offerId = req.params.id;
+
+//         await Offer.findByIdAndUpdate(offerId,
+//             {status: false},
+//             {new: true}
+//             );
+
+//             res.redirect('/admin/dashboard/offers');
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 
 
@@ -448,6 +494,7 @@ const addCover = async (req, res) => {
     }
 }
 
+
 const editCover = async (req, res) => {
     try {
         
@@ -455,6 +502,7 @@ const editCover = async (req, res) => {
         console.log(error);
     }
 }
+
 
 const deleteCover = async (req, res) => {
     try {
@@ -476,24 +524,17 @@ const deleteCover = async (req, res) => {
 }
 
 module.exports = {
-    loadAddProduct,
-    loadEditProduct,
-    loadCategory,
-    loadCategoryList,
-    loadEditCategory,
-    loadAddCover,
-    showCategoryOffers,
-    loadAddoffer,
-    loadCoverDetails,
-    loadEditCover,
-    addCategory,
-    addOffer,
-    deleteCategory,
-    editCategory,
-    addProduct,
-    deleteProduct,
-    editProduct,
-    addCover,
-    editCover,
-    deleteCover
+    
+    loadAddProduct, loadEditProduct,
+   
+    loadCategory, loadCategoryList, loadEditCategory,
+  
+    loadAddCover, loadCoverDetails, loadEditCover,
+
+    addCategory, deleteCategory, editCategory,
+
+    addProduct, deleteProduct, editProduct,
+
+    addCover, editCover, deleteCover
+
 }

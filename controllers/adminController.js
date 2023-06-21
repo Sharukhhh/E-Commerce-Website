@@ -8,7 +8,7 @@ const Banner = require('../models/bannerModel');
 const Wallet= require('../models/walletModel');
 
 const exceljs = require('exceljs');
-
+const session = require('express-session');
 const pdf = require('html-pdf');
 
 
@@ -22,10 +22,22 @@ const loadAdminlog = async (req, res)=>{
     }
 }
 
+const adminLogout = async (req, res) => {
+    try {
+        req.session.admin = false;
+
+        res.redirect('/admin');
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const loadDashboard = async (req, res)=>{     
     try {
 
-        
+        const admin = req.session.admin;
+
         //total Users
         const totalUsers = await User.aggregate([
             {$group: {    
@@ -163,6 +175,7 @@ const loadDashboard = async (req, res)=>{
        
 
         res.render('dashboard',{
+            admin,
             orderCount, 
             totalUsersValue, 
             totalSalesValue, 
@@ -185,10 +198,10 @@ const loadDashboard = async (req, res)=>{
 
 const showSalesReport = async (req, res) => {
     try {
-        
+        const admin = req.session.admin;
         const salesData = await Order.find().populate('user').populate('item.product').populate('item.quantity');
 
-        res.render('sales-report', {salesData});
+        res.render('sales-report', {admin, salesData});
 
     } catch (error) {
         console.log(error);
@@ -197,6 +210,7 @@ const showSalesReport = async (req, res) => {
 
 const exportSalesExcel = async (req, res) => {
     try {
+        const admin = req.session.admin;
         const workbook = new exceljs.Workbook();
         const workSheet = workbook.addWorksheet('Sales Report');
 
@@ -254,10 +268,11 @@ const exportSalesExcel = async (req, res) => {
 
 const loadProductView = async (req, res)=>{
     try {
+        const admin = req.session.admin;
         const products = await Product.find().populate('category');
         const categories = await Category.find();
 
-        res.render('products-view', {products, categories});
+        res.render('products-view', {admin, products, categories});
     } catch (error) {
         console.log(error);
     }
@@ -267,7 +282,7 @@ const loadProductView = async (req, res)=>{
 const loadUserVIew = async (req, res)=>{
     try {
        
-
+        const admin = req.session.admin;
         const usersData = await User.find();
 
         res.render('user-view', {
@@ -282,6 +297,7 @@ const loadUserVIew = async (req, res)=>{
 
 const userBlockList = async (req, res)=> {
     try {
+        const admin = req.session.admin;
         const usersData = await User.find();
         res.render('blocked-users', {customers : usersData});
     } catch (error) {
@@ -291,6 +307,8 @@ const userBlockList = async (req, res)=> {
 
 const loadOrderDetails = async (req, res) => {
     try {
+        const admin = req.session.admin;
+
         let page = 1;
         if(req.query.page){
             page = req.query.page;
@@ -322,6 +340,7 @@ const loadOrderDetails = async (req, res) => {
 
 const verifyAdminLogin = async (req, res)=>{
     try {
+        req.session.admin = true;
         const email = req.body.email;
         const password = req.body.password;
         if(email === 'adminsr@gmail.com' && password === 'admin123'){
@@ -434,19 +453,17 @@ const refundAmount = async (req, res) => {
 
 
 module.exports = {
-    loadAdminlog,
-    loadDashboard,
-    showSalesReport,
-    exportSalesExcel,
-    verifyAdminLogin,
-    loadProductView,
-    loadUserVIew,
-    userBlockList,
-    loadOrderDetails,
-    updateOrderStatus,
-    refundAmount,
-    blockUser,
-    unBlockUser
     
+    loadAdminlog, verifyAdminLogin, adminLogout,
+    
+    loadDashboard, showSalesReport, exportSalesExcel,
 
+    loadProductView, loadUserVIew, userBlockList,
+       
+    loadOrderDetails, updateOrderStatus,
+    
+    refundAmount,
+
+    blockUser, unBlockUser
+    
 }

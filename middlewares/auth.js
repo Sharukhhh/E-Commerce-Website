@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+
 const isLoggedIn = async (req, res, next)=>{
     if(req.session.user){
         next();
@@ -8,9 +9,9 @@ const isLoggedIn = async (req, res, next)=>{
 }
 
 
-const isLogged = async (req, res, next)=>{
+const isLogged = async (req, res, next)=>{ 
     if(req.session.user){
-        res.redirect('/');
+        res.redirect('/user'); 
     }else{
         next();
     }
@@ -22,7 +23,7 @@ const isBlocked = async (req, res, next) => {
         const userId = req.session.user._id;
         const user = await User.findById(userId);
         if (user.is_blocked) {
-          const flashMessage = 'Access Denied, You are Blocked!!';
+          // const flashMessage = 'Access Denied, You are Blocked!!';     
         //   req.session.flash = flashMessage;
           req.session.save(() => {
             res.redirect('/login');
@@ -30,11 +31,11 @@ const isBlocked = async (req, res, next) => {
           return;
         }
       }
-      res.locals.flash = req.flash();
+      res.locals.flash = req.flash();   
       next();
     } catch (error) {
       
-      console.error('Error in isBlocked middleware:', error);
+      console.error('Error in isBlocked middleware:', error);           
       next(error);
     }
   };

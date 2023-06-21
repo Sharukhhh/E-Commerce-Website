@@ -18,27 +18,29 @@ const bodyparser = require('body-parser');
 adminroute.use(bodyparser.urlencoded({extended: true}));
 adminroute.use(bodyparser.json());
 
-adminroute.get('/' , adminController.loadAdminlog);
+adminroute.get('/' , auth.isLogged, adminController.loadAdminlog);
 
-adminroute.get('/dashboard' ,  adminController.loadDashboard);                         
+adminroute.get('/logout' , adminController.adminLogout);  
 
-adminroute.get('/dashboard/products', adminController.loadProductView);
+adminroute.get('/dashboard' , auth.isAdminLoggedIn,  adminController.loadDashboard);                         
 
-adminroute.get('/dashboard/users', adminController.loadUserVIew);
+adminroute.get('/dashboard/products', auth.isAdminLoggedIn, adminController.loadProductView);
 
-adminroute.get('/dashboard/report', adminController.showSalesReport);     
+adminroute.get('/dashboard/users', auth.isAdminLoggedIn, adminController.loadUserVIew);
+
+adminroute.get('/dashboard/report', auth.isAdminLoggedIn, adminController.showSalesReport);     
 
 adminroute.get('/dashboard/exportxl', adminController.exportSalesExcel);
 
-adminroute.get('/dashboard/orders', adminController.loadOrderDetails);
+adminroute.get('/dashboard/orders', auth.isAdminLoggedIn, adminController.loadOrderDetails);
 
-adminroute.get('/dashboard/blocked_users', adminController.userBlockList);
+adminroute.get('/dashboard/blocked_users', auth.isAdminLoggedIn, adminController.userBlockList);
 
-adminroute.get('/dashboard/add_coupon' , couponController.loadAddCoupon);
+adminroute.get('/dashboard/add_coupon' , auth.isAdminLoggedIn, couponController.loadAddCoupon);
 
-adminroute.get('/dashboard/coupons' , couponController.loadCouponDetails);
+adminroute.get('/dashboard/coupons' , auth.isAdminLoggedIn, couponController.loadCouponDetails);
 
-adminroute.get('/dashboard/coupons/:id/delete' , couponController.deleteCoupon );
+adminroute.get('/dashboard/coupons/:id/delete' ,  couponController.deleteCoupon );
 
 adminroute.get('/dashboard/coupons/:id/activate' , couponController.activateCoupon);
 

@@ -9,7 +9,7 @@ const offerSchema = new mongoose.Schema({
 
     description: {
         type: String,
-        required: true,
+        required: true,    
     },
 
     createdDate: {

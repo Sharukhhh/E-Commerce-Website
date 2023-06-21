@@ -14,7 +14,7 @@ twilioroute.use(session({
 }));
 
 twilioroute.post('/sendotp' , auth.isLogged, twilioController.sendotp);
-twilioroute.post('/verifyOtp' , auth.isLogged, twilioController.verifyOtp);
+twilioroute.post('/verifyOtp' , auth.isLogged, twilioController.verifyOtp);                           
 
 
 

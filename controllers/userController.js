@@ -7,6 +7,7 @@ const Wishlist = require('../models/wishlistModel');
 const Banner = require('../models/bannerModel');
 const Wallet = require('../models/walletModel');
 const Coupon = require('../models/couponModel');
+const Offer = require('../models/offerModel');
 // const toastr = require('toastr');
 
 const crypto = require('crypto');
@@ -188,7 +189,7 @@ const loadItems = async (req, res)=>{
             currentPage = totalPages;
         }
 
-        const skip = (currentPage - 1) * limit;
+        const skip = (currentPage - 1) * limit;           
 
         let products;
 
@@ -212,7 +213,72 @@ const loadItems = async (req, res)=>{
     }
 }
 
-const loadProductView = async (req, res)=>{
+        
+
+
+              
+const searchProduct = async (req, res) => {
+    try {
+        const user = req.session.user;
+
+        
+        const {category, sortBy, page, search} = req.query;
+
+       
+        const limit = 9;        
+        let currentPage = parseInt(page) || 1;
+
+        let query = {};
+
+        if (category) {
+            query.category = category;
+        }
+        
+        if(search){
+            query.pname = {$regex: search , $options: 'i'};
+        }
+
+        const count = await Product.countDocuments(query);
+        const totalPages = Math.ceil(count / limit);
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        let skip = (currentPage - 1) * limit;       
+        if(skip < 0){
+            skip = 0;
+        }              
+
+        let products;
+
+        if(category){
+            products = await Product.find(query).sort({price : sortBy === 'low-to-high' ? 1 : -1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        } else if(search){
+            products = await Product.find(query).sort({price : sortBy === 'low-to-high' ? 1 : -1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        }else{
+            products = await Product.find().sort({price : sortBy === 'low-to-high' ? 1 : -1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        }
+        const categories = await Category.find();
+
+        res.render('products-show', {products, user, categories, totalPages, currentPage });
+    } catch (error) {
+        console.log(error);   
+    }
+}
+
+
+
+const loadProductView = async (req, res)=>{          
     try {
         const user = req.session.user;
         const productId = req.params.id;
@@ -228,6 +294,7 @@ const loadProductView = async (req, res)=>{
         console.log(error);
     }
 }
+
 
 const loadUserProfile = async (req, res) => {
     try {
@@ -455,9 +522,12 @@ const orderPlaced = async (req, res) => {
         // userWallet.balance -= balance;
         // await userWallet.save();
 
-        userWallet.balance -= walletDiscount;
+        if(walletDiscount){
+            userWallet.balance -= walletDiscount;
 
-        await userWallet.save();
+            await userWallet.save();
+        }
+
 
         if(payment_method == 'cod'){
 
@@ -622,6 +692,7 @@ const orderPlaced = async (req, res) => {
     }
  }
 
+
  const verifyPayment = async (req, res) => {
     try {
         const {razorpay_order_id,  razorpay_payment_id, razorpay_signature} = req.body.payment_method;
@@ -638,11 +709,8 @@ const orderPlaced = async (req, res) => {
         console.log(error);
     }
  }
-
-
-
-          
     
+
 
 const loadUserOrders = async (req, res) => {
     try {
@@ -659,12 +727,16 @@ const loadUserOrders = async (req, res) => {
 
 const orderInvoice = async (req, res) => {
     try {    
+        const user = req.session.user;
         const orderId = req.params.id;
-        const orderData = await Order.findById(orderId)
-        .populate('user', 'name ')
-        .populate('item.product', 'pname price image[0]');
+        const userOrder = await User.find(user);
 
-        res.render('invoice', {orderData});
+        const orderData = await Order.findById(orderId)
+        .populate('item.product');
+
+        const userAddress = await Order.findById(orderId).populate('address');
+
+        res.render('invoice', {orderData, userOrder, userAddress, user});
     } catch (error) {
         console.log(error);
     }
@@ -753,6 +825,8 @@ const registerUser = async (req, res)=>{
     }
 }
 
+
+
 const verfiyUserLogin = async (req,res)=> {
     try {
         const email =  req.body.email;
@@ -787,10 +861,6 @@ const verfiyUserLogin = async (req,res)=> {
     }
 };
 
-// toastr.options = {
-//     positionClass: 'toast-top-right', // Adjust as needed
-//     containerId: 'toast-container', // ID of the container element
-//   };
 
 const addToWishlist = async (req, res) => {
     try {
@@ -802,7 +872,7 @@ const addToWishlist = async (req, res) => {
         let userWishlist = await Wishlist.findOne({user:userId });
 
         if(!userWishlist){
-            const newList = await new Wishlist({user: userId, items: []});
+            const newList = await new Wishlist({user: userId, items: []});       
             await newList.save();
 
             userWishlist = newList;
@@ -1132,37 +1202,34 @@ const returnOrder = async (req, res) => {
 }
 
 module.exports = {
-    loadMaintanencePage,
-    loadNoUserMaint,
-    loadMainPage,
-    loadLogin,
-    loadRegister,
-    loadOTPlogin,
-    loadHomePage,
-    loadLogout,
-    indexProduct,
-    loadItems,
-    loadProductView,
+    loadMaintanencePage, loadNoUserMaint,
+
+    loadMainPage, indexProduct,
+
+    loadLogin, loadRegister, loadOTPlogin,
+
+    loadHomePage, loadLogout,
+      
+    loadItems, loadProductView, searchProduct,
+
     loadUserProfile,
     loadCart,
     loadWishlist,
-    loadAddress,
-    loadCheckOut,
-    loadUserOrders,
-    orderInvoice,
     deleteAddress,
-    userWallet,
-    registerUser,
-    verfiyUserLogin,
-    addToWishlist,
-    addToCart,
-    updatenumber,
-    decreseNumber,
-    removeItemWishlist,
-    removItemCart,
-    profileAddAddress,
-    addAddress,
-    editAddress,
+
+    userWallet, loadUserOrders, orderInvoice,
+
+    registerUser, verfiyUserLogin,
+   
+    addToWishlist, removeItemWishlist,
+
+    addToCart, updatenumber, decreseNumber, removItemCart,
+      
+    profileAddAddress, addAddress, editAddress,
+
+    loadAddress, loadCheckOut,
+    
+
     walletPay,
     orderPlaced,
     paypalSuccess,

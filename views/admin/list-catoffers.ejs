@@ -132,18 +132,6 @@
                   <div data-i18n="Horizontal Form">Category List </div>
                 </a>
               </li>
-              <li class="menu-item active">
-                <a href="/admin/dashboard/offers" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-table"></i>
-                  <div data-i18n="Horizontal Form">Category Offers</div>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="/admin/dashboard/add_offer" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                  <div data-i18n="Horizontal Form">Add Category Offers </div>
-                </a>
-              </li>
           </li>
           
           <li class="menu-header small text-uppercase">
@@ -233,18 +221,6 @@
 
             <ul class="navbar-nav flex-row align-items-center ms-auto">
               <!-- Place this tag where you want the button to render. -->
-              <li class="nav-item lh-1 me-3">
-                <a
-                  class="github-button"
-                  href="https://github.com/themeselection/sneat-html-admin-template-free"
-                  data-icon="octicon-star"
-                  data-size="large"
-                  data-show-count="true"
-                  aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                  >Star</a
-                >
-              </li>
-
               <!-- User -->
               <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -269,34 +245,13 @@
                     </a>
                   </li>
                   <li>
-                    <div class="dropdown-divider"></div>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      <i class="bx bx-user me-2"></i>
-                      <span class="align-middle">My Profile</span>
-                    </a>
-                  </li>
-                  <li>
                     <a class="dropdown-item" href="#">
                       <i class="bx bx-cog me-2"></i>
                       <span class="align-middle">Settings</span>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
-                      <span class="d-flex align-items-center align-middle">
-                        <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                        <span class="flex-grow-1 align-middle">Billing</span>
-                        <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                      </span>
-                    </a>
-                  </li>
-                  <li>
-                    <div class="dropdown-divider"></div>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="auth-login-basic.html">
+                    <a class="dropdown-item" href="/admin/logout">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Log Out</span>
                     </a>
@@ -339,11 +294,27 @@
                               <tr>
   
                                     <td><%= index + 1%></td>
-                                    <td><strong><%= offer.category %></strong></td>
+                                    <td><strong><%= offer.category.categname %></strong></td>
                                     <td><%=offer.amount %></td>
-                                    <td><%= offer.createdDate %></td>
-                                    <td><%= offer.expiryDate %></td>
-                                    <td><%= offer.status %></td>
+                                    <td><%= offer.createdDate.toLocaleDateString('en-GB') %></td>
+                                    <td><%= offer.expiryDate.toLocaleDateString('en-GB') %> <br> <br>
+                                      <% if(offer.status == false) { %>
+                                        <span class="badge bg-label-danger">Deactivated</span>
+                                      <% } else if(offer.status == true){ %>
+                                        <span class="badge bg-label-success">Activated</span>
+                                      <% } else if(new Date(offer.expiryDate) < new Date()){ %>
+                                        <span class="badge bg-label-info">Expired</span>  
+                                      <% } %>  
+                                    </td>
+                                    <td>
+                                      <% if(new Date(offer.expiryDate) < new Date()) { %>
+                                        <button class="btn btn-secondary btn-xs" disabled>Cannot Activate</button>
+                                      <% } else if(offer.status){ %>
+                                        <a href="/admin/dashboard/offers/<%= offer._id %>/deactivate" class="btn btn-danger btn-xs">Deactivate Coupon</a>
+                                      <% } else { %>  
+                                        <a href="/admin/dashboard/offers/<%= offer._id %>/activate" class="btn btn-success btn-xs">Activate Coupon</a>
+                                      <% } %>
+                                    </td>
                                     <td>
                                       <div class="dropdown">
                                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

@@ -1,5 +1,11 @@
 <%- include('../partials/adminHeader.ejs') -%>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+<!-- DataTables CSS -->
+<link rel="stylesheet"
+href=
+"https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+
 <!-- Layout wrapper -->
 <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
@@ -126,21 +132,9 @@
                 </a>
               </li>
               <li class="menu-item">
-                <a href="/admin/dashbaord/category_list" class="menu-link">
+                <a href="/admin/dashboard/category_list" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-detail"></i>
                   <div data-i18n="Horizontal Form">Category List </div>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="/admin/dashboard/offers" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-table"></i>
-                  <div data-i18n="Horizontal Form">Category Offers</div>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="/admin/dashboard/add_offer" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                  <div data-i18n="Horizontal Form">Add Category Offers </div>
                 </a>
               </li>
           </li>  
@@ -230,17 +224,6 @@
 
             <ul class="navbar-nav flex-row align-items-center ms-auto">
               <!-- Place this tag where you want the button to render. -->
-              <li class="nav-item lh-1 me-3">
-                <a
-                  class="github-button"
-                  href="https://github.com/themeselection/sneat-html-admin-template-free"
-                  data-icon="octicon-star"
-                  data-size="large"
-                  data-show-count="true"
-                  aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                  >Star</a
-                >
-              </li>
 
               <!-- User -->
               <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -266,34 +249,13 @@
                     </a>
                   </li>
                   <li>
-                    <div class="dropdown-divider"></div>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      <i class="bx bx-user me-2"></i>
-                      <span class="align-middle">My Profile</span>
-                    </a>
-                  </li>
-                  <li>
                     <a class="dropdown-item" href="#">
                       <i class="bx bx-cog me-2"></i>
                       <span class="align-middle">Settings</span>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
-                      <span class="d-flex align-items-center align-middle">
-                        <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                        <span class="flex-grow-1 align-middle">Billing</span>
-                        <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                      </span>
-                    </a>
-                  </li>
-                  <li>
-                    <div class="dropdown-divider"></div>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="/admin">
+                    <a class="dropdown-item" href="/admin/logout">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Log Out</span>
                     </a>
@@ -327,7 +289,7 @@
               <!-- <h5 class="card-header">Bordered Table</h5> -->
               <div class="card-body">
                 <div class="table-responsive text-nowrap">
-                  <table class="table table-bordered">
+                  <table id="salesTable" class="table table-bordered">
                     <thead>
                       <tr>
                         <th>No.</th>
@@ -344,7 +306,7 @@
                     <% salesData.reverse().forEach((order,index) => { %>
                       <tr>
                         <td><%= index + 1%></td>
-                        <td><%= order.createdAt %></td>
+                        <td><%= new Date(order.createdAt).toLocaleString() %></td>
                         <td><%= order._id %></td>
                         <td>
                           <strong><%= order.user.name %></strong>
@@ -393,6 +355,26 @@
   </div>
   <!-- / Layout wrapper -->
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src=
+  "https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js">
+  </script>
 
+<style>
+
+  table.dataTable tbody td {
+    border-bottom: 1px solid #ddd;
+  }
+
+  </style>
+
+  <script>
+
+        $(document).ready(function() {
+      $('#salesTable').DataTable();
+    })
+    let table= new DataTable('#salesTable')
+
+  </script>
 
   <%- include('../partials/adminFooter.ejs') -%>

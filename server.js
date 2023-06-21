@@ -4,7 +4,6 @@ const path = require('path');
 const app = express();
 const bodyparser = require('body-parser');
 const cookieparser = require('cookie-parser');
-const dotenv = require('dotenv');
 const nocache = require('nocache');
 const flash = require('connect-flash')
 require('dotenv').config();
@@ -15,11 +14,12 @@ const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
 
 //database connection
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/Ecommerce')
+mongoose.connect('mongodb://127.0.0.1:27017/Ecommerce') 
 .then(()=> console.log('Connected to Database'))
 .catch(err=> console.log(err));
 
 app.use(flash());
+app.use(nocache())
 
 const PORT = process.env.PORT || 5000;  
 
@@ -35,9 +35,8 @@ app.use(cookieparser());
 app.use(express.static('uploads'));
 
 app.use((req, res, next) => {
-    res.header(
-      "Cache-Control",
-      "no-cache,private,no-Store,must-revalidate,max-scale=0,post-check=0,pre-check=0"
+    res.setHeader(
+      'Cache-Control', 'no-cache, no-store, must-revalidate' 
     );
     next();
   });

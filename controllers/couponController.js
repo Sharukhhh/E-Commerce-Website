@@ -8,11 +8,15 @@ const Banner = require('../models/bannerModel');
 const Wallet = require('../models/walletModel');
 const Coupon = require('../models/couponModel');
 const couponModel = require('../models/couponModel');
+const session = require('express-session');
+
+const auth = require('../middlewares/adminAuth');
 
 require('dotenv').config();
 
 const loadAddCoupon = async (req, res) => {
     try {
+        const admin = req.session.admin;
         res.render('add-coupon');
     } catch (error) {
         console.log(error);
@@ -23,6 +27,7 @@ const loadAddCoupon = async (req, res) => {
 
 const loadCouponDetails = async (req, res) => {
     try {
+        const admin = req.session.admin;
         const couponData = await Coupon.find();
         res.render('view-coupon', {couponData});
     } catch (error) {
@@ -170,11 +175,10 @@ const redeemCoupon = async (req, res) => {
 
 
 module.exports = {
-    loadAddCoupon,
-    loadCouponDetails,
-    addCoupon,
-    deleteCoupon,
-    activateCoupon,
-    deactivateCoupon,
+    
+    loadAddCoupon, loadCouponDetails,
+    
+    addCoupon, deleteCoupon, activateCoupon, deactivateCoupon,
+
     redeemCoupon,
 }

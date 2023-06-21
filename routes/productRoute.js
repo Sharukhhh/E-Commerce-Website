@@ -46,19 +46,24 @@ const storage = multer.diskStorage({
     storage: storage,
   });
 
+  const auth = require('../middlewares/adminAuth');   
 
 
-proute.get('/dashboard/addProduct' , productController.loadAddProduct);
+proute.get('/dashboard/addProduct' , auth.isAdminLoggedIn, productController.loadAddProduct);
 
-proute.get('/dashboard/editProduct/:id', productController.loadEditProduct);
+proute.get('/dashboard/editProduct/:id', auth.isAdminLoggedIn, productController.loadEditProduct);
 
-proute.get('/dashboard/category' , productController.loadCategory);
+proute.get('/dashboard/category' , auth.isAdminLoggedIn, productController.loadCategory);
 
-proute.get('/dashboard/category_list', productController.loadCategoryList);
+proute.get('/dashboard/category_list', auth.isAdminLoggedIn, productController.loadCategoryList);
 
-proute.get('/dashboard/offers', productController.showCategoryOffers);
+// proute.get('/dashboard/offers', auth.isAdminLoggedIn, productController.showCategoryOffers);
 
-proute.get('/dashboard/add_offer', productController.loadAddoffer);
+// proute.get('/dashboard/offers/:id/activate', productController.activateOffer);
+
+// proute.get('/dashboard/offers/:id/deactivate', productController.deactivateOffer);
+
+// proute.get('/dashboard/add_offer', auth.isAdminLoggedIn, productController.loadAddoffer);
 
 proute.get('/dashboard/category_list/:id/delete', productController.deleteCategory);
 
@@ -66,11 +71,11 @@ proute.get('/dashboard/editCategory/:id', productController.loadEditCategory);
 
 proute.get('/dashboard/products/:id/delete', productController.deleteProduct);
 
-proute.get('/dashboard/add_cover', productController.loadAddCover);
+proute.get('/dashboard/add_cover', auth.isAdminLoggedIn, productController.loadAddCover);
 
-proute.get('/dashboard/cover', productController.loadCoverDetails);
+proute.get('/dashboard/cover', auth.isAdminLoggedIn, productController.loadCoverDetails);
 
-proute.get('/dashboard/edit_cover/:id/edit', productController.loadEditCover);
+proute.get('/dashboard/edit_cover/:id/edit', auth.isAdminLoggedIn, productController.loadEditCover);
 
 proute.get('/dashboard/delete_cover/:id/delete', productController.deleteCover);
 
@@ -80,7 +85,7 @@ proute.post('/dashboard/addProduct' , upload.array('image', 5), productControlle
  
 proute.post('/dashboard/addCategory' , productController.addCategory);
 
-proute.post('/dashboard/add_offer', productController.addOffer);
+// proute.post('/dashboard/add_offer', productController.addOffer);
 
 proute.post('/dashboard/editProduct/:id',upload.array('image', 5),  productController.editProduct);
 
