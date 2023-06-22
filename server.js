@@ -78,6 +78,11 @@ paypal.configure({
   'client_id':PAYPAL_CLIENT_ID,
   'client_secret':PAYPAL_CLIENT_SECRET
   
+});               
+              
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);          
+  res.render('404');                           
 })
 
 

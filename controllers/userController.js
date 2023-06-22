@@ -292,6 +292,7 @@ const loadProductView = async (req, res)=>{
         res.render('product-single', {user, product, productData });
     } catch (error) {
         console.log(error);
+        res.render('404');
     }
 }
 
@@ -542,6 +543,16 @@ const orderPlaced = async (req, res) => {
             });
     
             await order.save();
+
+            await cart.products.map(async(item) => {
+                let newStock = item.productId.stock - item.quantity;
+
+                await Product.findByIdAndUpdate(
+                    item.productId._id, 
+                    {stock: newStock},
+                    {new: true}
+                );
+            });
     
             await Cart.deleteOne({user: userId});
     
@@ -565,6 +576,16 @@ const orderPlaced = async (req, res) => {
             });       
     
             await order.save();
+
+            await cart.products.map(async(item) => {
+                let newStock = item.productId.stock - item.quantity;
+
+                await Product.findByIdAndUpdate(
+                    item.productId._id, 
+                    {stock: newStock},
+                    {new: true}
+                );
+            });
     
             cart.products.forEach((element) => {
                 paypalTotal += totalPrice;
@@ -601,7 +622,7 @@ const orderPlaced = async (req, res) => {
                 }
               });
               
-              await Cart.findOneAndDelete({ userId: userId });   
+              await Cart.deleteOne({user: userId});
  
 
         } else if(payment_method == 'razorpay') {
@@ -956,10 +977,20 @@ const updatenumber = async (req, res) => {
         const cartIndex = cart.products.findIndex((item) => item.productId.equals(cartItemId));
 
         if(cartIndex === -1) {
-            return res.json({message: 'Cart Item not found'});
+            return res.json({success: false, message: 'Cart Item not found'});
         }
 
         cart.products[cartIndex].quantity += 1;
+        const products = cart.products[cartIndex].productId;
+        const maxQuantity = products.stock;
+
+        if(cart.products[cartIndex].quantity > maxQuantity){
+            return res.json({
+                success: false, message: 'Maximum Quantity Reached',
+                maxQuantity
+            })
+        }
+        
         await cart.save();
 
         const total = cart.products[cartIndex].quantity* cart.products[cartIndex].productId.price;

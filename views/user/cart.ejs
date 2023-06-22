@@ -194,6 +194,9 @@
     </footer>
   </div>
 
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <script>
     const setSubTotal = () =>{
       const itemTotal = document.getElementsByClassName('item-total');
@@ -246,8 +249,16 @@
             $(`#quantity_${cartItemId}`).text(data?.quantity)
             
             setSubTotal();
-          }else{
-            console.log('error');
+          }else if(data.success==false){
+            if(data.maxQuantity){
+              swal({
+                title: 'info',
+                text: 'Stock Limit Exceeded',
+                icon: 'info',
+                button: 'OK'
+              })
+            }
+            setSubTotal();
           }
         },
         error: function(jqXHR, textStatus, errorThrown){

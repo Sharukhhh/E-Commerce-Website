@@ -61,22 +61,14 @@
             <p class="mb-4"></p>
             <p><strong class="text-primary h4"> ₹ <%= product.price %></strong></p>
             <div class="mb-5">
-              <!-- <div class="input-group mb-3" style="max-width: 120px;">
-                <div class="input-group-prepend">
-                  <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
-                </div>
-
-                <div type="text" class="form-control text-center" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1"> </div>
-                
-                <div class="input-group-append">
-                  <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-                </div>
-              </div> -->
             </div>
     
             <div class="d-flex">
-              <p><a href="/user/addto_cart/<%= product._id %>" class="buy-now btn btn-sm btn-primary me-4" id="addToCartBtn">Add To Cart</a></p>
-              
+              <% if (product.stock <= 0){ %>
+                <p class="text-danger fw-bold">Sorry! This item is Out Of Stock </p>
+              <% } else {%>  
+                <p><a href="/user/addto_cart/<%= product._id %>" class="buy-now btn btn-sm btn-primary me-4" id="addToCartBtn">Add To Cart</a></p>
+              <% } %>
              
             </div>
           </div>

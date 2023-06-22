@@ -284,6 +284,7 @@
                         <th>Description</th>
                         <th>Images</th>
                         <th>Category</th>
+                        <th>Total Stock</th>
                         <th>Price</th>
                         <th>Actions</th>
                       </tr>
@@ -310,6 +311,7 @@
                           </ul>
                         </td>
                         <td><%= product.category.categname %></td>
+                        <td><%= product.stock %></td>
                         <td>₹ <%= product.price %></td>
                         <td>
                           <div class="dropdown">

@@ -33,6 +33,10 @@
                   <tr class="">
                     <td class="text-center product-thumbnail">
                       <a href="/user/product_one/<%= product.ProductId %>"> <img src="/<%= product.productId && product.productId.image && product.productId.image[0] %>" alt="Image" class="img-fluid"> </a>
+
+                      <% if (product.productId && product.productId.stock <= 0) { %>
+                        <span class="text-center text-danger">Out of Stock</span>
+                      <% } %>
                     </td>
                     <td>
                         <p>

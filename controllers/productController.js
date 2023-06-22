@@ -311,12 +311,15 @@ const editCategory = async (req, res) => {
 const addProduct = async (req, res)=>{ 
     try {
         const categories = await Category.find();
-        const {pname, category, brand, details, price} = req.body;
+        const {pname, category, brand, stock, details, price} = req.body;
         const imgFiles = req.files;
 
         if(price <= 0){
-            
             return res.render('add-product', {categories, message: 'Invalid Price Value, Try Again'});
+        }
+
+        if(stock <= 0){
+            return res.render('add-product', {categories, message: 'Invalid Stock Entry'});
         }
 
         const imagePaths = [];
@@ -347,6 +350,7 @@ const addProduct = async (req, res)=>{
             pname,
             category: categoryId,
             brand,
+            stock,
             details,
             image: imagePaths,
             price 
@@ -396,8 +400,14 @@ const editProduct = async (req, res) => {
         const categories = await Category.find();
         const updatedPrice =  req.body.price;
 
+        const stockUpdate = req.body.stock;
+
         if(updatedPrice <= 0){
             return res.render('update-product', {item, categories, message: 'Price value cannot be negative!'});
+        }
+
+        if(stockUpdate <= 0){
+            return res.render('update-product', {item, categories, message: 'Invalid Stock Entry' });
         }
 
         let newImages = item.image;
@@ -442,6 +452,7 @@ const editProduct = async (req, res) => {
                 pname: req.body.pname,
                 details: req.body.details,
                 brand: req.body.brand,
+                stock: stockUpdate,
                 price: updatedPrice,
                 category: req.body.category,
                 image: newImages
@@ -495,13 +506,7 @@ const addCover = async (req, res) => {
 }
 
 
-const editCover = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        console.log(error);
-    }
-}
+
 
 
 const deleteCover = async (req, res) => {
@@ -535,6 +540,6 @@ module.exports = {
 
     addProduct, deleteProduct, editProduct,
 
-    addCover, editCover, deleteCover
+    addCover, deleteCover
 
 }

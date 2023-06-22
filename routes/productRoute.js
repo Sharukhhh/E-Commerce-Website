@@ -93,7 +93,7 @@ proute.post('/dashboard/editCategory/:id', productController.editCategory);
 
 proute.post('/dashboard/add_cover', upload.single('cover'), productController.addCover);
 
-proute.post('/dashboard/edit_cover/:id/edit', upload.single('cover'), productController.editCover);
+
 
 
 
