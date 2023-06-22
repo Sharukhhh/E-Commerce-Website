@@ -21,7 +21,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/Ecommerce')
 app.use(flash());
 app.use(nocache())
 
-const PORT = process.env.PORT || 5000;  
+const PORT = process.env.PORT || 3000;  
 
 app.set('view engine' , 'ejs');
 app.set('views', [
