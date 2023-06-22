@@ -595,8 +595,8 @@ const orderPlaced = async (req, res) => {
                 intent: "sale",
                 payer: { payment_method: "paypal" },
                 redirect_urls: {
-                  return_url: "http://eyestyle.online/user/paypal-success",
-                  cancel_url: "http://eyestyle.online/user/paypal-err",
+                  return_url: "https://eyestyle.online/user/paypal-success",
+                  cancel_url: "https://eyestyle.online/user/paypal-err",
                 },
                 transactions: [
                   {
