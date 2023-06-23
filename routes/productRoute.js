@@ -10,7 +10,7 @@ const session = require('express-session');
 proute.use(session({
     secret: 'sercretkey',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
 }));
 
 const productController = require('../controllers/productController');
@@ -44,6 +44,7 @@ const storage = multer.diskStorage({
   
   const upload = multer({
     storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }
   });
 
   const auth = require('../middlewares/adminAuth');   

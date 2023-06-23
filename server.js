@@ -2,6 +2,7 @@ const exp = require('constants');
 const express = require('express');
 const path = require('path');
 const app = express();
+const session = require('express-session');
 const bodyparser = require('body-parser');
 const cookieparser = require('cookie-parser');
 const nocache = require('nocache');
@@ -18,7 +19,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/Ecommerce')
 .then(()=> console.log('Connected to Database'))
 .catch(err=> console.log(err));
 
-app.use(flash());
+app.use(flash());          
 app.use(nocache())
 
 const PORT = process.env.PORT || 3000;  
@@ -31,6 +32,13 @@ app.set('views', [
 
 ]);
 app.use(cookieparser());
+
+app.use(session({
+  secret: 'secretkey',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {maxAge: 3600000}
+}));
 
 app.use(express.static('uploads'));
 

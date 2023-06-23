@@ -48,11 +48,20 @@ const verifyOtp = async (req, res, next)=>{
             to: '+91'+ mobile, code: verficationCode
         });
 
+        const user = await User.findOne({mobile: mobile});
+        const userName = user.name;
+        const userId = user._id;
+
+        console.log(userId, userName);
+
         if(verification_check.status === 'approved'){
-            const user = req.session.user;
-            res.render('home', {user});
+
+            req.session.user = user;
+            
+
+           res.redirect('/user');
         }else{
-            res.render('otpLogin', {message : 'Invalid OTP, Try again '});
+            return res.render('otpLogin', {message : 'Invalid OTP, Try again '});
         }
     } catch (error) {
         console.log(error);

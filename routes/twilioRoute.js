@@ -9,12 +9,12 @@ const session = require('express-session');
 twilioroute.use(session({
     secret: 'sercretkey',
     resave: false,
-    saveUninitialized: true,
-    cookie: {maxAge: 300000}
+    saveUninitialized: false,
+
 }));
 
-twilioroute.post('/sendotp' , auth.isLogged, twilioController.sendotp);
-twilioroute.post('/verifyOtp' , auth.isLogged, twilioController.verifyOtp);                           
+twilioroute.post('/sendotp' ,  twilioController.sendotp);
+twilioroute.post('/verifyOtp' , twilioController.verifyOtp);                                     
 
 
 

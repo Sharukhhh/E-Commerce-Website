@@ -11,8 +11,8 @@ const session = require('express-session');
 userroute.use(session({
     secret: 'sercretkey',
     resave: false,
-    saveUninitialized: true,
-    cookie: {maxAge: 300000}
+    saveUninitialized: false,
+   
 }));
 
 userroute.use(flash());

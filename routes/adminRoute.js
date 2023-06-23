@@ -6,7 +6,7 @@ const session = require('express-session');
 adminroute.use(session({
     secret: 'secretkey',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
 }));
 
 const auth = require('../middlewares/adminAuth');                                   
