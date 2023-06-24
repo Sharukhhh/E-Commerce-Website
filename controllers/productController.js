@@ -236,7 +236,7 @@ const addCategory = async (req, res)=>{
 
         await newCategory.save();
 
-        res.redirect('/admin/dashbaord/category_list');
+        res.redirect('/admin/dashboard/category_list');
     }else{
         return res.render('add-category', {message: 'Entered Category Already Exists'});
     }
@@ -255,7 +255,7 @@ const deleteCategory = async (req, res) => {
         }
 
         await category.deleteOne();
-        res.redirect('/admin/dashbaord/category_list'); 
+        res.redirect('/admin/dashboard/category_list'); 
 
     } catch (error) {
         console.log(error);
@@ -294,7 +294,7 @@ const editCategory = async (req, res) => {
             await updateCategory.save();
 
             if(updateCategory){
-                return res.redirect('/admin/dashbaord/category_list');
+                return res.redirect('/admin/dashboard/category_list');
             }else{
                 return res.redirect('/admin/dashboard');
             }

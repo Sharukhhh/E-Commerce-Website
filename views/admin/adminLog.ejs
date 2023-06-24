@@ -103,12 +103,18 @@
                   <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                 </div>
               </div>
-              <!-- <div class="mb-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="remember-me" />
-                  <label class="form-check-label" for="remember-me"> Remember Me </label>
+
+              <%
+              if(typeof message !== 'undefined'){
+                %>
+                <div id="msg" class="form-control alter alert-danger ">
+                  <p class="fw-bold text-center"> <%=message %> </p>
                 </div>
-              </div> -->
+                <%
+              }
+
+            %>
+
               <div class="mb-3">
                 <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
               </div>
@@ -128,6 +134,16 @@
   </div>
 
   <!-- / Content -->
+
+  <script>
+        setTimeout(()=>{
+     var msg =  document.getElementById('msg');
+      if(msg){
+        msg.style.display = 'none';
+      }
+
+    }, 4000);
+  </script>
 
 
 
