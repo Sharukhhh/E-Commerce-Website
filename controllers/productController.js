@@ -322,20 +322,20 @@ const addProduct = async (req, res)=>{
             return res.render('add-product', {categories, message: 'Invalid Stock Entry'});
         }
 
-        const imagePaths = [];
+        const imagePaths = [];  
 
         for(const file of imgFiles){
-            const { path } = file;
+            const { path, filename } = file;
 
-            const pathArray = path.split('\\');
-            const fileName= pathArray[pathArray.length - 1];
+            // const pathArray = path.split('\\');
+            // const fileName= pathArray[pathArray.length - 1];
 
             //Resize and crop image to fixed size
             const resziedImageBuffer = await sharp(path)
             .resize({width: 1920, height: 960, fit: 'cover'})
             .toBuffer();
 
-            const croppedFileName = `cropped_${fileName}`;
+            const croppedFileName = `cropped_${filename}`;
             const croppedFilePath = `uploads/${croppedFileName}`;
 
             await sharp(resziedImageBuffer).toFile(croppedFilePath);
@@ -416,16 +416,16 @@ const editProduct = async (req, res) => {
             newImages = [];
 
             for(const file of req.files){
-                const { path } = file;
+                const { path, filename } = file;
 
-                const pathArray = path.split('\\');
-                const fileName = pathArray[pathArray.length - 1];
+                // const pathArray = path.split('\\');
+                // const fileName = pathArray[pathArray.length - 1];
 
                 const resizedImageBuffer = await sharp(path)
                 .resize({ width: 1920, height: 960, fit: 'cover' })
                 .toBuffer();
                 
-                const croppedFileName = `cropped_${fileName}`;
+                const croppedFileName = `cropped_${filename}`;
                 const croppedFilePath = `uploads/${croppedFileName}`;
 
                 await sharp(resizedImageBuffer).toFile(croppedFilePath);
