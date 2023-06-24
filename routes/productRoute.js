@@ -58,14 +58,6 @@ proute.get('/dashboard/category' , auth.isAdminLoggedIn, productController.loadC
 
 proute.get('/dashboard/category_list', auth.isAdminLoggedIn, productController.loadCategoryList);
 
-// proute.get('/dashboard/offers', auth.isAdminLoggedIn, productController.showCategoryOffers);
-
-// proute.get('/dashboard/offers/:id/activate', productController.activateOffer);
-
-// proute.get('/dashboard/offers/:id/deactivate', productController.deactivateOffer);
-
-// proute.get('/dashboard/add_offer', auth.isAdminLoggedIn, productController.loadAddoffer);
-
 proute.get('/dashboard/category_list/:id/delete', productController.deleteCategory);
 
 proute.get('/dashboard/editCategory/:id', productController.loadEditCategory);

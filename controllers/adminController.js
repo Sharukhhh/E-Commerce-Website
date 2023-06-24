@@ -412,6 +412,7 @@ const refundAmount = async (req, res) => {
         
         if(!refundingOrder){
             res.status(404).send({message: 'Order not found'});
+            return;
         }
         const wallet = await Wallet.findOne({userId: refundingOrder.user});
 
@@ -424,7 +425,7 @@ const refundAmount = async (req, res) => {
         } else {
 
             //else creating a new wallet for respective user
-            const newWallet = await Wallet({
+            const newWallet = await Wallet({   
                 userId: refundingOrder.user,
                 orderId: refundingOrder._id,
                 balance: refundingOrder.total,
@@ -434,12 +435,13 @@ const refundAmount = async (req, res) => {
             console.log(newWallet);
             await newWallet.save();
 
-            await Order.updateOne(
-                {_id: orderId}, {$set: {status: 'Refunded'}}       
-            );
-
-            res.redirect('/admin/dashboard/orders');
         }
+
+        await Order.updateOne(
+            {_id: orderId}, {$set: {status: 'Refunded'}}       
+        );
+
+        res.redirect('/admin/dashboard/orders');
     } catch (error) {
         console.log(error);
     }

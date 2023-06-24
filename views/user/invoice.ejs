@@ -33,7 +33,7 @@
 
                             <h5>Your order Confirmed!</h5>
 
-                            <span class="font-weight-bold d-block mt-4">Hello, <%= orderData.user.name %></span>
+                            <span class="font-weight-bold d-block mt-4">Hello, <%= userAddress.name %></span>
                             <span>You order has been confirmed and will be shipped in next two days!</span>
 
                             <div class="payment border-top mt-3 mb-3 border-bottom table-responsive">
@@ -73,7 +73,12 @@
                                                 <div class="py-2">
 
                                                     <span class="d-block text-muted">Shiping Address</span>
-                                                <span><%= userOrder.address %></span>
+                                              
+                                                <span><%= userAddress.name %></span>
+                                                <span><%= userAddress.phone %></span>
+                                                <span><%= userAddress.add %></span>
+                                                <span><%= userAddress.district %></span>
+                                                <span><%= userAddress.state %></span>
                                                     
                                                 </div>
                                             </td>
@@ -138,7 +143,7 @@
                                             <tbody class="totals">
 
                                                 <tr>
-                                                    <td>
+                                                    <!-- <td>
                                                         <div class="text-left">
 
                                                             <span class="text-muted">Subtotal</span>
@@ -149,12 +154,12 @@
                                                         <div class="text-right">
                                                             <span>₹  </span>
                                                         </div>
-                                                    </td>
+                                                    </td> -->
                                                 </tr>
 
 
                                                  <tr>
-                                                    <td>
+                                                    <!-- <td>
                                                         <div class="text-left">
 
                                                             <span class="text-muted">Discount</span>
@@ -165,7 +170,7 @@
                                                         <div class="text-right">
                                                             <span class="text-success">₹ </span>
                                                         </div>
-                                                    </td>
+                                                    </td> -->
                                                 </tr>
 
 
@@ -195,7 +200,7 @@
                                 </div>
 
 
-                                <p>We will be sending shipping confirmation email when the item shipped successfully!</p>
+                                
                                 <p class="font-weight-bold mb-0">Thanks for shopping with us!</p>
                                 <span>EyeStyle Team</span>
 

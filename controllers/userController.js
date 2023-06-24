@@ -755,7 +755,8 @@ const orderInvoice = async (req, res) => {
         const orderData = await Order.findById(orderId)
         .populate('item.product');
 
-        const userAddress = await Order.findById(orderId).populate('address');
+        const userAddress = orderData.address
+        console.log(userAddress, "ewtrwhetajtadjte")
 
         res.render('invoice', {orderData, userOrder, userAddress, user});
     } catch (error) {

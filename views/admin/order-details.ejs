@@ -419,9 +419,10 @@ href=
 
                           <span class="text-danger"><%= orders.reason %></span> <br>
 
-                          <% if(orders.status === 'Returned') {%>
+                          <% if (orders.status === 'Returned' || (orders.status === 'Cancelled' && orders.payment_way === 'paypal')) { %>
                             <a href="/admin/refund/<%= orders._id %>" class="btn btn-danger btn-xs">Refund Amount</a>
-                          <% } %>  
+                          <% } %>
+                          
                         </td>
                         <td>
                           <form action="/admin/orderupdate/<%= orders._id %>" method="post">

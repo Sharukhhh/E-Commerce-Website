@@ -95,5 +95,5 @@ app.use((error, req, res, next) => {
 
 
 app.listen(PORT, (req, res)=>{
-    console.log(`http://localhost:${PORT}`);
+    console.log(`http://localhost:${PORT}`);    
 });
