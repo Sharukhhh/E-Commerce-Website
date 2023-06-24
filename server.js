@@ -90,7 +90,7 @@ paypal.configure({
               
 app.use((error, req, res, next) => {
   res.status(error.status || 500);          
-  res.render('user/404');                           
+  res.render('404');                           
 });
 
 app.use((error, req ,res, next) => {
