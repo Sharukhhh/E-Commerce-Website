@@ -292,7 +292,7 @@ const loadProductView = async (req, res)=>{
         res.render('product-single', {user, product, productData });
     } catch (error) {
         console.log(error);
-        res.render('404');
+        res.render('user/404');
     }
 }
 

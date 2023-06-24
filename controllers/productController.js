@@ -394,7 +394,7 @@ const deleteProduct = async (req, res)=>{
 
 const editProduct = async (req, res) => {
     try {
-        const pId = req.params.id;
+        const pId = req.params.id;  
         const item = await Product.findById(pId);
 
         const categories = await Category.find();
@@ -416,16 +416,16 @@ const editProduct = async (req, res) => {
             newImages = [];
 
             for(const file of req.files){
-                const { path, filename } = file;
+                const { path } = file;
 
-                // const pathArray = path.split('\\');
-                // const fileName = pathArray[pathArray.length - 1];
+                const pathArray = path.split('\\');
+                const fileName = pathArray[pathArray.length - 1];
 
                 const resizedImageBuffer = await sharp(path)
                 .resize({ width: 1920, height: 960, fit: 'cover' })
                 .toBuffer();
                 
-                const croppedFileName = `cropped_${filename}`;
+                const croppedFileName = `cropped_${fileName}`;
                 const croppedFilePath = `uploads/${croppedFileName}`;
 
                 await sharp(resizedImageBuffer).toFile(croppedFilePath);
