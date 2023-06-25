@@ -48,6 +48,8 @@ userroute.get('/logout',   userController.loadLogout);
 
 userroute.get('/product', auth.isLogged, userController.indexProduct);
 
+userroute.get('/search', auth.isLogged, userController.indexSearch);
+
 userroute.get('/user/products' , auth.isBlocked, auth.isLoggedIn,  userController.loadItems);
 
 userroute.get('/user/product_one/:id' , auth.isBlocked ,auth.isLoggedIn,  userController.loadProductView);

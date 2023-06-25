@@ -143,6 +143,9 @@ const indexProduct = async (req, res) => {
         }
 
         const skip = (currentPage - 1) * limit;
+        if(skip < 0){
+            skip = 0;
+        }  
 
         let products;
 
@@ -162,6 +165,63 @@ const indexProduct = async (req, res) => {
 
         res.render('index-product', {products,  categories, totalPages, currentPage});    
 
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const indexSearch = async (req, res) => {
+    try {
+        const {category, sortBy, page, search} = req.query;
+
+       
+        const limit = 9;        
+        let currentPage = parseInt(page) || 1;
+
+        let query = {};
+
+        if (category) {
+            query.category = category;
+        }
+        
+        if(search){
+            query.pname = {$regex: search , $options: 'i'};
+        }
+
+        const count = await Product.countDocuments(query);
+        const totalPages = Math.ceil(count / limit);
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        let skip = (currentPage - 1) * limit;       
+        if(skip < 0){
+            skip = 0;
+        }              
+
+        let products;
+
+        if(category){
+            products = await Product.find(query).sort({price : sortBy === 'low-to-high' ? 1 : -1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        } else if(search){
+            products = await Product.find(query).sort({price : sortBy === 'low-to-high' ? 1 : -1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        }else{
+            products = await Product.find().sort({price : sortBy === 'low-to-high' ? 1 : -1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        }
+        const categories = await Category.find();
+
+        res.render('index-product', {products, categories, totalPages, currentPage });
     } catch (error) {
         console.log(error);
     }
@@ -575,7 +635,8 @@ const orderPlaced = async (req, res) => {
                 address: selectedAddress
             });       
     
-            await order.save();
+            req.session.order = order;
+           
 
             await cart.products.map(async(item) => {
                 let newStock = item.productId.stock - item.quantity;
@@ -622,7 +683,7 @@ const orderPlaced = async (req, res) => {
                 }
               });
               
-              await Cart.deleteOne({user: userId});
+             
  
 
         } else if(payment_method == 'razorpay') {
@@ -686,6 +747,8 @@ const orderPlaced = async (req, res) => {
         const user = req.session.user
         const userId = req.session.user?._id;
 
+        const order = req.session.order;
+
         const execute_payment_json = {
             "payer_id": payerId,
             "transactions": [{
@@ -696,7 +759,7 @@ const orderPlaced = async (req, res) => {
             }]
         };
 
-        paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) { 
+        paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) { 
             //When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
 
             if (error) {
@@ -705,6 +768,15 @@ const orderPlaced = async (req, res) => {
             } else {
         
               console.log(JSON.stringify(payment));
+
+              const orderDetails = new Order({
+                ...order
+              });
+
+               await orderDetails.save();
+
+               await Cart.deleteOne({user: userId});
+
               res.render("paypalSuccess", { payment, user, userId, });
             }});
       
@@ -1236,7 +1308,7 @@ const returnOrder = async (req, res) => {
 module.exports = {
     loadMaintanencePage, loadNoUserMaint,
 
-    loadMainPage, indexProduct,
+    loadMainPage, indexProduct, indexSearch,
 
     loadLogin, loadRegister, loadOTPlogin,
 
