@@ -16,10 +16,11 @@ const productRoutes = require('./routes/productRoute');
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
+const MONGO_URL = process.env.MONGO_URL;
 
 //database connection
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/Ecommerce') 
+mongoose.connect(MONGO_URL) 
 .then(()=> console.log('Connected to Database'))
 .catch(err=> console.log(err));
 
@@ -53,6 +54,7 @@ app.use((req, res, next) => {
     next();
   });
 
+app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 
 
