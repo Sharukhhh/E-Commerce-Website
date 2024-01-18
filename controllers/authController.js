@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
 
 const loadLogin = async (req, res)=>{
@@ -20,6 +21,17 @@ const loadRegister = async(req, res)=>{
     }
 }
 
+
+
+    const securePassword = async (password)=>{
+        try {
+        const hashedPassword =  await bcrypt.hash(password, 10);
+        return hashedPassword;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 const registerUser = async (req, res)=>{
     try{

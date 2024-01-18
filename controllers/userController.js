@@ -10,9 +10,11 @@ const Coupon = require('../models/couponModel');
 
 const crypto = require('crypto');
 require('dotenv').config();
-
+const { ObjectId } = require('mongodb');
+// const { default: mongoose } = require('mongoose');
+// const { success, options } = require('toastr');
+// const { totalmem } = require('os');
 const paypal = require('paypal-rest-sdk');
-
 const razorpay = require('razorpay');
 const {RAZORPAY_SECRET, RAZORPAY_ID } = process.env;
 
@@ -37,25 +39,7 @@ const loadNoUserMaint = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-} 
-
-
-
-const bcrypt = require('bcrypt');
-const { ObjectId } = require('mongodb');
-const { default: mongoose } = require('mongoose');
-const { success, options } = require('toastr');
-const { totalmem } = require('os');
-const securePassword = async (password)=>{
-    try {
-      const hashedPassword =  await bcrypt.hash(password, 10);
-      return hashedPassword;
-
-    } catch (error) {
-        console.log(error);
-    }
 }
-
 
 
 const loadMainPage = async (req, res)=>{ 
@@ -88,9 +72,6 @@ const loadHomePage = async (req, res) => {
         console.log(error);
     }
 };
-
-
-
 
 const indexProduct = async (req, res) => {
     try {
