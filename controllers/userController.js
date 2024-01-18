@@ -479,217 +479,217 @@ const walletPay = async (req, res) => {
 let paypalTotal = 0;
 
 
-const orderPlaced = async (req, res) => {
-    
-    try {
-        const addressId = req.params.id;                                                          
-        const user = req.session.user;
-        const userId = req.session.user?._id;
-        const payment_method = req.body.paymentmethod;
+    const orderPlaced = async (req, res) => {
+        
+        try {
+            const addressId = req.params.id;                                                          
+            const user = req.session.user;
+            const userId = req.session.user?._id;
+            const payment_method = req.body.paymentmethod;
 
-        const userData = await User.findById(userId);
+            const userData = await User.findById(userId);
 
-        const addressIndex = userData.address.findIndex((item) => item._id.equals(addressId));
+            const addressIndex = userData.address.findIndex((item) => item._id.equals(addressId));
 
-        const selectedAddress = userData.address[addressIndex];
+            const selectedAddress = userData.address[addressIndex];
 
-        const cart = await Cart.findOne({user}).populate('products.productId');
+            const cart = await Cart.findOne({user}).populate('products.productId');
 
-        const userWallet= await Wallet.findOne({userId: userId});
+            const userWallet= await Wallet.findOne({userId: userId});
 
-        const discount = cart.total;
-        const walletDiscount = cart.wallet;
+            const discount = cart.total;
+            const walletDiscount = cart.wallet;
 
-        const items = cart.products.map((item) => {      
-            const product = item.productId;
-            const quantity = item.quantity;
-            const price = product.price;
+            const items = cart.products.map((item) => {      
+                const product = item.productId;
+                const quantity = item.quantity;
+                const price = product.price;
 
-            if(!price){
-                throw error('Product price is required');                       
+                if(!price){
+                    throw error('Product price is required');                       
+                }
+
+                if (!product) {
+                    throw new Error("Product is required");
+                }
+
+                return { 
+                    product: product._id,
+                    quantity: quantity,
+                    price : price
+                } ;
+            });
+
+            let totalPrice = 0; 
+            items.forEach((item) => {
+                totalPrice += item.price * item.quantity;
+            });
+
+            if(discount){
+                totalPrice = discount;               
+            }    
+
+            if(walletDiscount){
+                totalPrice -= walletDiscount;
+            }
+            // userWallet.balance -= balance;
+            // await userWallet.save();
+
+            if(walletDiscount){
+                userWallet.balance -= walletDiscount;
+
+                await userWallet.save();
             }
 
-            if (!product) {
-                throw new Error("Product is required");
-              }
 
-             return { 
-                product: product._id,
-                quantity: quantity,
-                price : price
-             } ;
-        });
+            if(payment_method == 'cod'){
 
-        let totalPrice = 0; 
-        items.forEach((item) => {
-            totalPrice += item.price * item.quantity;
-        });
+                const order = new Order ({
+                    user: userId,
+                    item: items,
+                    total: totalPrice,
+                    status: 'Pending',   
+                    payment_way: payment_method,
+                    createdAt : new Date(),
+                    address: selectedAddress
+                });
+        
+                await order.save();
 
-        if(discount){
-            totalPrice = discount;               
-        }    
+                await cart.products.map(async(item) => {
+                    let newStock = item.productId.stock - item.quantity;
 
-        if(walletDiscount){
-            totalPrice -= walletDiscount;
-        }
-        // userWallet.balance -= balance;
-        // await userWallet.save();
-
-        if(walletDiscount){
-            userWallet.balance -= walletDiscount;
-
-            await userWallet.save();
-        }
-
-
-        if(payment_method == 'cod'){
-
-            const order = new Order ({
-                user: userId,
-                item: items,
-                total: totalPrice,
-                status: 'Pending',   
-                payment_way: payment_method,
-                createdAt : new Date(),
-                address: selectedAddress
-            });
-    
-            await order.save();
-
-            await cart.products.map(async(item) => {
-                let newStock = item.productId.stock - item.quantity;
-
-                await Product.findByIdAndUpdate(
-                    item.productId._id, 
-                    {stock: newStock},
-                    {new: true}
-                );
-            });
-    
-            await Cart.deleteOne({user: userId});
-    
-            res.render('order-placed', {user , cart, selectedAddress, userId});
-    
-        }
-        else if(payment_method == 'paypal'){
-
-            if(cart.wallet){
-                totalPrice -= cart.wallet;
+                    await Product.findByIdAndUpdate(
+                        item.productId._id, 
+                        {stock: newStock},
+                        {new: true}
+                    );
+                });
+        
+                await Cart.deleteOne({user: userId});
+        
+                res.render('order-placed', {user , cart, selectedAddress, userId});
+        
             }
+            else if(payment_method == 'paypal'){
 
-            const order = new Order ({
-                user: userId,
-                item: items,
-                total: totalPrice,
-                status: 'Pending',
-                payment_way: payment_method,
-                createdAt : new Date(),
-                address: selectedAddress
-            });       
-    
-            req.session.order = order;
-           
+                if(cart.wallet){
+                    totalPrice -= cart.wallet;
+                }
 
-            await cart.products.map(async(item) => {
-                let newStock = item.productId.stock - item.quantity;
+                const order = new Order ({
+                    user: userId,
+                    item: items,
+                    total: totalPrice,
+                    status: 'Pending',
+                    payment_way: payment_method,
+                    createdAt : new Date(),
+                    address: selectedAddress
+                });       
+        
+                req.session.order = order;
+            
 
-                await Product.findByIdAndUpdate(
-                    item.productId._id, 
-                    {stock: newStock},
-                    {new: true}
-                );
-            });
-    
-            cart.products.forEach((element) => {
-                paypalTotal += totalPrice;
-            });
+                await cart.products.map(async(item) => {
+                    let newStock = item.productId.stock - item.quantity;
 
-            let createPayment = {
-                intent: "sale",
-                payer: { payment_method: "paypal" },
-                redirect_urls: {
-                  return_url: "http://localhost:3000/user/paypal-success",
-                  cancel_url: "http://localhost:3000/user/paypal-err",
-                },
-                transactions: [
-                  {
-                    amount: {
-                      currency: "USD",
-                      total: (paypalTotal / 82).toFixed(2), // Divide by 82 to convert to USD
+                    await Product.findByIdAndUpdate(
+                        item.productId._id, 
+                        {stock: newStock},
+                        {new: true}
+                    );
+                });
+        
+                cart.products.forEach((element) => {
+                    paypalTotal += totalPrice;
+                });
+
+                let createPayment = {
+                    intent: "sale",
+                    payer: { payment_method: "paypal" },
+                    redirect_urls: {
+                    return_url: "https://eyestyle.onrender.com/user/paypal-success",
+                    cancel_url: "https://eyestyle.onrender.com/user/paypal-err",
                     },
-                    description: "Super User Paypal Payment",
-                  },
-                ],
-              };
-      
-              paypal.payment.create(createPayment, function (error, payment) {
-                if (error) {
-                  throw error;
-                } else {
-                  for (let i = 0; i < payment.links.length; i++) {
-                    if (payment.links[i].rel === "approval_url") {
-                        
-                      res.redirect(payment.links[i].href);
+                    transactions: [
+                    {
+                        amount: {
+                        currency: "USD",
+                        total: (paypalTotal / 82).toFixed(2), // Divide by 82 to convert to USD
+                        },
+                        description: "Super User Paypal Payment",
+                    },
+                    ],
+                };
+        
+                paypal.payment.create(createPayment, function (error, payment) {
+                    if (error) {
+                    throw error;
+                    } else {
+                    for (let i = 0; i < payment.links.length; i++) {
+                        if (payment.links[i].rel === "approval_url") {
+                            
+                        res.redirect(payment.links[i].href);
+                        }
                     }
-                  }
-                }
-              });
-              
-             
- 
-
-        } else if(payment_method == 'razorpay') {
-
-            const newOrder = new Order ({
-                user: userId,
-                item: items,
-                total: totalPrice,
-                status: 'Pending',
-                payment_way: payment_method,
-                createdAt : new Date(),
-                address: selectedAddress                  
-            });   
+                    }
+                });
+                
+                
     
-            await newOrder.save();
 
-            cart.products.forEach((element) => {
-                razorpayTotal += totalPrice;
-            });
+            } else if(payment_method == 'razorpay') {
 
-            const options = {
-                amount: razorpayTotal,
-                currency: 'INR',
-                receipt: 'order_receipt',
-                payment_capture: 1
-            };
+                const newOrder = new Order ({
+                    user: userId,
+                    item: items,
+                    total: totalPrice,
+                    status: 'Pending',
+                    payment_way: payment_method,
+                    createdAt : new Date(),
+                    address: selectedAddress                  
+                });   
+        
+                await newOrder.save();
 
-            instance.orders.create(options, (err, orderr) => {
-                let details = {
-                    message: 'Order created',
-                    order_id: "fddgd",
-                    amount: razorpayTotal *  100,
-                    key_id: process.env.RAZORPAY_ID,
-                    product_name: cart.products,
-                    user_data: {
-                        name: userData.name,
-                        email: userData.email,
-                        contact: userData.mobile                
-                    },
-                }
-                console.log(details,"i am detail");
-                res.json({status: true, details: details});
-                if(!err){
-                }else{
-                    res.status(404).send({success: false, message: 'Wrong in razorpay payment'});
-                }
-            })
-        }      
-      
-          } catch(error){
-            console.log(error);
-          }
+                cart.products.forEach((element) => {
+                    razorpayTotal += totalPrice;
+                });
 
- }
+                const options = {
+                    amount: razorpayTotal,
+                    currency: 'INR',
+                    receipt: 'order_receipt',
+                    payment_capture: 1
+                };
+
+                instance.orders.create(options, (err, orderr) => {
+                    let details = {
+                        message: 'Order created',
+                        order_id: "fddgd",
+                        amount: razorpayTotal *  100,
+                        key_id: process.env.RAZORPAY_ID,
+                        product_name: cart.products,
+                        user_data: {
+                            name: userData.name,
+                            email: userData.email,
+                            contact: userData.mobile                
+                        },
+                    }
+                    console.log(details,"i am detail");
+                    res.json({status: true, details: details});
+                    if(!err){
+                    }else{
+                        res.status(404).send({success: false, message: 'Wrong in razorpay payment'});
+                    }
+                })
+            }      
+        
+            } catch(error){
+                console.log(error);
+            }
+
+    }
 
 
  const paypalSuccess = async (req,res) => {    
