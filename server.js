@@ -20,7 +20,7 @@ const MONGO_URL = process.env.MONGO_URL;
 
 //database connection
 const mongoose = require('mongoose');
-mongoose.connect(MONGO_URL) 
+mongoose.connect(MONGO_URL);
 .then(()=> console.log('Connected to Database'))
 .catch(err=> console.log(err));
 
