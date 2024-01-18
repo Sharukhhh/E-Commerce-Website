@@ -9,6 +9,10 @@ const nocache = require('nocache');
 const flash = require('connect-flash')
 require('dotenv').config();
 const paypal = require('paypal-rest-sdk');
+const authRoutes = require('./routes/authRoutes');
+const userroutes = require('./routes/userRoute');
+const adminroutes = require('./routes/adminRoute');
+const productRoutes = require('./routes/productRoute'); 
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
@@ -61,21 +65,16 @@ app.use('/js', express.static(path.join(__dirname, 'public/index/js')));
 app.use('/fonts', express.static(path.join(__dirname, 'public/index/fonts')));
 
 
+// for authentication related routes
+app.use('/' , authRoutes);
+
 //for userside routes
-const userroutes = require('./routes/userRoute');
 app.use('/', userroutes);
 
-
 //for adminside routes
-const adminroutes = require('./routes/adminRoute');
 app.use('/admin' , adminroutes);
 
-//for connecting twilio route
-const twilioroutes = require('./routes/twilioRoute');
-app.use('/', twilioroutes);
-
 //for products
-const productRoutes = require('./routes/productRoute'); 
 app.use('/admin' , productRoutes);
 
 

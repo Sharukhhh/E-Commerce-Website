@@ -1,10 +1,7 @@
 const express = require('express');
-const bodyparser = require('body-parser');
 const userroute = express.Router();
 const cookieparser = require('cookie-parser');
 const flash = require('connect-flash')
-
-
 userroute.use(cookieparser());
 
 const session = require('express-session');
@@ -16,35 +13,22 @@ userroute.use(session({
 }));
 
 userroute.use(flash());
-
-
 const auth = require('../middlewares/auth');
 
 const userController = require('../controllers/userController');
 const couponController = require('../controllers/couponController');
 
-userroute.use(bodyparser.urlencoded({extended: true}));
-userroute.use(bodyparser.json());           
 
 
-  
 
-
+// ALL GET ROUTES
 userroute.get('/under_maintenance', userController.loadNoUserMaint);
 
 userroute.get('/user/under_coding', userController.loadMaintanencePage);
 
 userroute.get('/'  ,  userController.loadMainPage);
 
-userroute.get('/login'  , auth.isLogged,  userController.loadLogin); 
-
-userroute.get('/register' ,auth.isLogged,  userController.loadRegister); 
-
-userroute.get('/otpLogin' ,auth.isLogged, userController.loadOTPlogin);
-
 userroute.get('/user',   userController.loadHomePage);              
-
-userroute.get('/logout',   userController.loadLogout);
 
 userroute.get('/product', auth.isLogged, userController.indexProduct);
 
@@ -80,21 +64,14 @@ userroute.get('/user/my_wallet', auth.isBlocked, auth.isLoggedIn, userController
 
 userroute.get('/user/invoice/:id',auth.isBlocked, auth.isLoggedIn, userController.orderInvoice);
 
-              
-
 
 //paypal
 userroute.get('/user/paypal-success', auth.isLoggedIn, userController.paypalSuccess);
 
- 
 
 
 
-
-userroute.post('/register' ,   userController.registerUser);
-
-userroute.post('/login' ,  userController.verfiyUserLogin);
-
+// ALL POST ROUTES
 userroute.get('/searchProduct', userController.searchProduct);
 
 userroute.post('/incrementQuantity', userController.updatenumber);
